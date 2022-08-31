@@ -50,9 +50,9 @@ public class UserServiceImpl implements UserService{
 		if (user != null) {
 			String decryptedPassword = Security.decrypt(user.getPassword());
 			if (decryptedPassword.equals(password)) {
-				return false;
-			} else {
 				return true;
+			} else {
+				return false;
 			}
 		}
 		return false;

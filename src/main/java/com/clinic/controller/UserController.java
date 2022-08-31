@@ -65,16 +65,19 @@ public class UserController extends BaseController {
 		HashMap< String, Object > result = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS;
 		String responseMsg = StatusCode.SUCCESS.toString();
+		String username = null; String password;
 		try{
 			APIRequest<User> req = getRequestUser(input);
+			username = req.getPayload().getUsername();
+			password = req.getPayload().getPassword();
 			LOG.info("REQ::{}", req.toString());
-			Boolean isValid = userService.checkValidUser(req.getPayload().getUsername(), req.getPayload().getPassword());
+			Boolean isValid = userService.checkValidUser(username, password);
 			if (!isValid) {
 				statusTrx = StatusCode.INVALID;
 				responseMsg = StatusCode.INVALID.toString();
 				result.put("message", "User Is Not Valid");
 			} else {
-				User user = userService.getUserByUsername(req.getPayload().getUsername());
+				User user = userService.getUserByUsername(username);
 				UserData usrData = new UserData().setAttribute(user);
 				
 				List < ChildData > listChildData = new ArrayList < ChildData > ();
