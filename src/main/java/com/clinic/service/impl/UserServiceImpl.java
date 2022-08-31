@@ -2,9 +2,12 @@ package com.clinic.service.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.clinic.controller.UserController;
 import com.clinic.dao.UserDao;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
@@ -13,30 +16,20 @@ import com.clinic.util.Security;
 
 @Service
 public class UserServiceImpl implements UserService{
-
+	
+	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
+	
 	@Autowired
 	UserDao userDao;
 	
 	@Override
 	public User getUserByID (int id) throws Exception {
-		User user = userDao.getUserByID(id);
-//		if (user != null) {
-//			List < Child > child = userDao.getChildByUserID(user.getId());
-//			user.setChild(child);
-//			return user;
-//		}
-		return user;
+		return userDao.getUserByID(id);
 	}
 	
 	@Override
 	public User getUserByUsername (String username) throws Exception {
-		User user = userDao.getUserByUsername(username);
-//		if (user != null) {
-//			List < Child > child = userDao.getChildByUserID(user.getId());
-//			user.setChild(child);
-//			return user;
-//		}
-		return user;
+		return userDao.getUserByUsername(username);
 	}
 
 	@Override
@@ -49,6 +42,7 @@ public class UserServiceImpl implements UserService{
 		User user = userDao.getUserByUsername(username);
 		if (user != null) {
 			String decryptedPassword = Security.decrypt(user.getPassword());
+			LOG.info(decryptedPassword + " " + password);
 			if (decryptedPassword.equals(password)) {
 				return true;
 			} else {

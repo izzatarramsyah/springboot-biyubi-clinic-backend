@@ -76,6 +76,10 @@ public class UserController extends BaseController {
 				statusTrx = StatusCode.INVALID;
 				responseMsg = StatusCode.INVALID.toString();
 				result.put("message", "User Is Not Valid");
+			} if (userService.getUserByUsername(username).getStatus().equals("ACTIVE")) {
+				statusTrx = StatusCode.INVALID;
+				responseMsg = StatusCode.INVALID.toString();
+				result.put("message", "User not active");
 			} else {
 				User user = userService.getUserByUsername(username);
 				UserData usrData = new UserData().setAttribute(user);

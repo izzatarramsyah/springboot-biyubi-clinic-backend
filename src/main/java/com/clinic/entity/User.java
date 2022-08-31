@@ -19,7 +19,6 @@ public class User {
 	private String createdBy;
 	private Date updatedDtm;
 	private String updatedBy;
-	//private List < Child > child;
 	
 	public int getId() {
 		return id;
@@ -99,12 +98,6 @@ public class User {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-//	public List<Child> getChild() {
-//		return child;
-//	}
-//	public void setChild(List<Child> child) {
-//		this.child = child;
-//	}
 	public Date getJoinDate() {
 		return joinDate;
 	}

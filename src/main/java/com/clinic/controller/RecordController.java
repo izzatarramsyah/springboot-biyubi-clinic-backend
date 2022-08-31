@@ -71,6 +71,10 @@ public class RecordController extends BaseController {
 				statusTrx = StatusCode.INVALID;
 				responseMsg = StatusCode.INVALID.toString();
 				result.put("message", "User not found");
+			} if (!user.getStatus().equals("ACTIVE")) {
+				statusTrx = StatusCode.INVALID;
+				responseMsg = StatusCode.INVALID.toString();
+				result.put("message", "User not active");
 			} else {
 				switch ( command ) { 
 				  case "info-schedule-vaccine":

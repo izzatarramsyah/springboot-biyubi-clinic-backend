@@ -24,9 +24,9 @@ public class MasterDaoImpl implements MasterDao{
 	
 	private static final Logger LOG = LogManager.getLogger(MasterDaoImpl.class);
 
-	public static final String GET_LIST_MST_VACCINE = "SELECT A.* FROM TBL_VACCINE_MASTER A WHERE A.STATUS = 'ACTIVE' ";
+	public static final String GET_LIST_MST_VACCINE = "SELECT A.* FROM TBL_VACCINE_MASTER A WHERE A.STATUS = 'ACTIVE' ORDER BY A.VACCINE_CODE ASC";
 
-	public static final String GET_LIST_MST_CHECK_UP_ = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.STATUS = 'ACTIVE' ";
+	public static final String GET_LIST_MST_CHECK_UP_ = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.STATUS = 'ACTIVE' ORDER BY A.BATCH ASC ";
 
 	public static final String GET_LIST_MST_DTL_VACCINE = "SELECT A.* FROM TBL_VACCINE_DTL A "
 			+ "WHERE A.VACCINE_CODE = ?"
