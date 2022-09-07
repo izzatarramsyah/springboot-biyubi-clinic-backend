@@ -1,12 +1,8 @@
 package com.clinic.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,15 +19,11 @@ import com.clinic.api.object.InfoRq;
 import com.clinic.api.request.APIRequest;
 import com.clinic.api.response.APIResponse;
 import com.clinic.constant.StatusCode;
-import com.clinic.entity.Child;
 import com.clinic.entity.User;
-import com.clinic.entity.VaccineMaster;
 import com.clinic.service.CheckUpService;
 import com.clinic.service.MasterService;
 import com.clinic.service.UserService;
 import com.clinic.service.VaccineService;
-import com.clinic.util.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin
 @RestController
@@ -56,46 +48,39 @@ public class RecordController extends BaseController {
 	public APIResponse<?> getSchedule(@RequestBody String input) {
 		LOG.traceEntry();
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
-		HashMap < String, Object > result = new HashMap< String, Object > ();
+		HashMap < String, Object > responseObject = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS;
-		String responseMsg = StatusCode.SUCCESS.toString();
-		String command = null; String uName = null; int userId; int childId;
-		try{
+		try {
+			LOG.info("GET SCHEDULE");
 			APIRequest < InfoRq > req = getInfoRq( input );
-			command = req.getHeader().getCommand();
-			uName = req.getHeader().getuName();
-			userId = req.getPayload().getUserId();
-			childId = req.getPayload().getChildId();
-			User user = userService.getUserByUsername(uName);
+			User user = userService.getUserByUsername( req.getHeader().getuName() );
 			if (user == null) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User not found");
+				statusTrx = StatusCode.USER_NOT_FOUND;
 			} if (!user.getStatus().equals("ACTIVE")) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User not active");
+				statusTrx = StatusCode.USER_NOT_VALID;
 			} else {
-				switch ( command ) { 
+				switch ( req.getHeader().getCommand() ) { 
 				  case "info-schedule-vaccine":
-					result.put("object", vaccineService.getSchedule(userId, childId));
-				    break;
+					  LOG.info("COMMAND : INFO-SCHEDULE-VACCINE");
+					  responseObject.put("object", vaccineService.getSchedule(req.getPayload().getUserId(), req.getPayload().getChildId()));
+					  break;
 				  case "info-schedule-checkup":
-				    result.put("object", checkHealthService.getSchedule(userId, childId));
-				    break;
+					  LOG.info("COMMAND : INFO-SCHEDULE-CHECKUP");
+					  responseObject.put("object", checkHealthService.getSchedule(req.getPayload().getUserId(), req.getPayload().getChildId()));
+					  break;
 				  default:
-					break;
+					  break;
 				}
+				user.setLastActivity(new Date());
+				userService.updateLastActivity(user);
+				response.setPayload(responseObject);
 			}
-			response.setPayload(result);
-			if (user != null) userService.updateLastActivity(user);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
-			responseMsg = StatusCode.GENERIC_ERROR.toString();
 		}
-		response.setHeader(new HeaderResponse (statusTrx.getCode(), responseMsg));
+		response.setHeader(new HeaderResponse (statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
 	}

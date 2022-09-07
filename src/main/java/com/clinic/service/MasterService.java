@@ -13,4 +13,6 @@ public interface MasterService {
 
 	CheckUpMaster getMstCheckUpByCode ( String code ) throws Exception;
 
+	String category ( String type, long month, double value ) throws Exception; 
+
 }

@@ -89,5 +89,10 @@ public class CheckUpServiceImpl implements CheckUpService{
 	public GrowthDtl getGrowthDtl(String mstCode, int recId) throws ParseException {
 		return checkHealthDao.getGrowthDtl(mstCode, recId);
 	}
+
+	@Override
+	public CheckUpRecord getCheckHealth(int userId, int childId, String mstCode) throws Exception {
+		return checkHealthDao.getCheckHealth(userId, childId, mstCode);
+	}
 	
 }

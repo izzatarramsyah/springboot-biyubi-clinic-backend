@@ -2,7 +2,6 @@ package com.clinic.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.api.object.ChildData;
-import com.clinic.api.object.GrowthDtlRs;
 import com.clinic.api.object.HeaderResponse;
 import com.clinic.api.object.UserData;
 import com.clinic.api.request.APIRequest;
@@ -32,10 +30,6 @@ import com.clinic.service.CheckUpService;
 import com.clinic.service.MailService;
 import com.clinic.service.MasterService;
 import com.clinic.service.UserService;
-import com.clinic.util.Graph;
-import com.clinic.util.MailHelper;
-import com.clinic.util.Security;
-import com.clinic.util.Util;
 
 @CrossOrigin
 @RestController
@@ -62,124 +56,130 @@ public class UserController extends BaseController {
 	public APIResponse<?> login(@RequestBody String input) {
 		LOG.traceEntry();
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
-		HashMap< String, Object > result = new HashMap< String, Object > ();
+		HashMap< String, Object > responseObject = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS;
-		String responseMsg = StatusCode.SUCCESS.toString();
-		String username = null; String password;
 		try{
+			LOG.info("LOGIN");
 			APIRequest<User> req = getRequestUser(input);
-			username = req.getPayload().getUsername();
-			password = req.getPayload().getPassword();
-			LOG.info("REQ::{}", req.toString());
-			Boolean isValid = userService.checkValidUser(username, password);
+			Boolean isValid = userService.checkValidUser(req.getPayload().getUsername(), req.getPayload().getPassword());
 			if (!isValid) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User Is Not Valid");
-			} if (!userService.getUserByUsername(username).getStatus().equals("ACTIVE")) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User not active");
-			} else {
-				User user = userService.getUserByUsername(username);
-				UserData usrData = new UserData().setAttribute(user);
+				statusTrx = StatusCode.USER_NOT_FOUND;
+			}  else {
 				
+				User user = userService.getUserByUsername( req.getPayload().getUsername() );
+				UserData usrData = new UserData().setAttribute(user);
 				List < ChildData > listChildData = new ArrayList < ChildData > ();
-				for (Child lst : userService.getChildByUserID( user.getId()) ) { 
+				
+				for (Child child : userService.getChildByUserID( user.getId()) ) { 
+					ChildData childData = new ChildData().setAttribute(child);
 					  
-					  String currentDate = formatDate.format(new Date());
-					  String birthDate = formatDate.format(lst.getBirthDate());
-					  long age = Util.calculateMonth(birthDate, currentDate);
-					  ChildData childData = new ChildData().setAttribute(lst);
-					  childData.setAge(age);
-					  
-					  List <GrowthDtlRs> listDtl = new ArrayList<GrowthDtlRs>();
-					  for (CheckUpRecord checkUpRecord: checkUpService.getListCheckHealth(lst.getUserId(), lst.getId())) {
-						  GrowthDtlRs dtl = new GrowthDtlRs();
-						  CheckUpMaster mst = masterService.getMstCheckUpByCode(checkUpRecord.getMstCode());
-						  dtl.setMstCode(mst.getCode());
-						  dtl.setDescription(mst.getDescription());
-						  dtl.setBatch(mst.getBatch());
-						  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUpRecord.getMstCode(), checkUpRecord.getId());
-						  dtl.setWeight(growthDtl.getWeight());
-						  dtl.setLength(growthDtl.getLength());
-						  dtl.setHeadDiameter(growthDtl.getHeadDiameter());
-						  listDtl.add(dtl);
+					List < Double > seriesWeight = new ArrayList < Double >();
+					List < Integer > seriesLength = new ArrayList < Integer >();
+					List < Double > seriesHeadDiameter = new ArrayList < Double >();
+
+					int batch = 0;
+					for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
+					  CheckUpRecord checkUp = checkUpService.getCheckHealth(child.getUserId(), child.getId(), lst.getCode());
+					  if (checkUp != null) {
+						  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
+						  batch = lst.getBatch();
+						  seriesWeight.add((double) growthDtl.getWeight());
+						  seriesLength.add(growthDtl.getLength());
+						  seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
 					  }
-					  childData.setGrowthDetail(listDtl);
+					 }
+					 
+					childData.setSeriesWeight(seriesWeight);
+					childData.setSeriesLength(seriesLength);
+					childData.setSeriesHeadDiameter(seriesHeadDiameter);
+					 
+					if (seriesWeight.size() > 0) {
+					  int index = seriesWeight.size() - 1;
+					  String weightCategory = masterService.category("WEIGHT", batch, seriesWeight.get(index));
+					  childData.setWeight( seriesWeight.get(index) );
+					  childData.setWeightCategory( weightCategory );
+					  childData.setWeightNotes( getWeightNotes(weightCategory) );
+					}
 					  
-					  if ( listDtl.size() > 0 ) {
-						  int index = listDtl.size() - 1;
-						  childData.setWeightCategory(Graph.categorizeWeight(age,  childData.getGrowthDetail().get(index).getWeight()));
-						  childData.setWeightNotes(Graph.getWeightNotes(childData.getWeightCategory()));
-						  childData.setLengthCategory(Graph.categorizeLength(age, childData.getGrowthDetail().get(index).getLength()));
-						  childData.setLengthNotes(Graph.getLengthNotes(childData.getLengthCategory()));
-						  childData.setHeadDiameterCategory(Graph.categorizeHeadDiameter(age, childData.getGrowthDetail().get(index).getHeadDiameter()));
-						  childData.setHeadDiameterNotes(Graph.getHeadDiameterNotes(childData.getHeadDiameterCategory()));
-					  }
-					  
-					  listChildData.add(childData);				 
+					if (seriesLength.size() > 0) {
+					  int index = seriesLength.size() - 1;
+					  String lengthCategory = masterService.category("LENGTH", batch, seriesLength.get(index));
+					  childData.setLength( seriesLength.get(index) );
+					  childData.setLengthCategory( lengthCategory );
+					  childData.setLengthNotes( getLengthNotes(lengthCategory) );
+					 }
+					 
+					if (seriesHeadDiameter.size() > 0) {
+					  int index = seriesHeadDiameter.size() - 1;
+					  String headDiameterCategory = masterService.category("HEAD CIRCUMFERENCE", batch, seriesHeadDiameter.get(index));
+					  childData.setHeadDiameter( seriesHeadDiameter.get(index) );
+					  childData.setHeadDiameterCategory( headDiameterCategory );
+					  childData.setHeadDiameterNotes( getHeadDiameterNotes(headDiameterCategory) );
+					}		
+					
+					listChildData.add(childData);
+					
 				}
+				
 				usrData.setChildData(listChildData);
-				result.put("message", "Login Success");
-				result.put("object", usrData);
+				responseObject.put("object", usrData);
+				response.setPayload(responseObject);
 				userService.updateLastActivity(user);
 			}
-			response.setPayload(result);
 		}catch (Exception e){
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
-			responseMsg = StatusCode.GENERIC_ERROR.toString();
 		}
-		response.setHeader(new HeaderResponse (statusTrx.getCode(), responseMsg));
+		response.setHeader(new HeaderResponse (statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.debug("RES::[{}]:{}", response);
 		LOG.traceExit();
 		return response;
 	}
 	
-	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public APIResponse<?> forgotPassword(@RequestBody String input) {
-		LOG.traceEntry();
-		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
-		HashMap < String, Object > result = new HashMap< String, Object > ();
-		StatusCode statusTrx = StatusCode.SUCCESS;
-		String responseMsg = StatusCode.SUCCESS.toString();
-		try{
-			APIRequest < User > req = getRequestUser(input);
-			LOG.info("REQ::{}", req.toString());
-			User user = userService.getUserByUsername(req.getPayload().getUsername());
-			if (user == null) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User Not Found");
-			} else {
-				if (!user.getEmail().equals(req.getPayload().getEmail())) {
-					statusTrx = StatusCode.INVALID;
-					responseMsg = StatusCode.INVALID.toString();
-					result.put("message", "Email not match");
-				} else if (!user.getPhone_no().equals(req.getPayload().getPhone_no())) {
-					statusTrx = StatusCode.INVALID;
-					responseMsg = StatusCode.INVALID.toString();
-					result.put("message", "Phone number not match");
-				} else {
-					String password = Security.decrypt(user.getPassword());
-					String message = MailHelper.forgotPasswordMessage(user.getFullname(), user.getUsername(), password);
-					mailService.sendEmail(user.getEmail(), "Lupa password Biyubi App", message, "");
-					result.put("message", "Send password Success");
-				}
-			}
-			response.setPayload(result);
-		}catch (Exception e){
-			e.printStackTrace();
-			LOG.error("ERR::[{}]:{}", e.getMessage());
-			statusTrx = StatusCode.GENERIC_ERROR;
-			responseMsg = StatusCode.GENERIC_ERROR.toString();
+	private String getWeightNotes (String notes) {
+		if (notes.equals("VERY UNDERWEIGHT")) {
+			return "Berat badan anak tergolong sangat kurus. Periksa segara ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lanjut";
+		} else if (notes.equals("UNDERWEIGHT")) {
+			return "Berat badan anak tergolong kurus. Periksa segara ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lanjut";
+		} else if (notes.equals("NORMAL")){
+			return "Berat badan anak tergolong normal. Tetap perhatikan pertumbuhan anak";
+		} else if (notes.equals("OVERWEIGHT")) {
+			return "Berat badan anak tergolong gemuk. Periksa segara ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lanjut";
+		} else if (notes.equals("VERY OVERWEIGHT")){
+			return "Berat badan anak tergolong sangat gemuk. Periksa segara ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lanjut";
 		}
-		response.setHeader(new HeaderResponse (statusTrx.getCode(), responseMsg));
-		LOG.debug("RES::[{}]:{}", response);
-		LOG.traceExit();
-		return response;
+		return null;
+	}
+	
+	public static String getLengthNotes (String notes){
+		if (notes.equals("VERY UNDERLENGTH")) {
+			return "Tinggi badan anak tergolong sangat pendek. Jadwalkan kunjungan ke dokter spesialis atau fasilitas kesehatan terdekat untuk pemeriksaan lebih lanjut";
+		} else if (notes.equals("UNDERLENGTH")) {
+			return "Tinggi badan anak tergolong pendek. Jadwalkan kunjungan ke dokter spesialis atau fasilitas kesehatan terdekat untuk pemeriksaan lebih lanjut";
+		} else if (notes.equals("NORMAL")){
+			return "Tinggi badan anak tergolong normal. Tetap perhatikan pertumbuhan anak";
+		} else if (notes.equals("OVERLENGTH")){
+			return "Tinggi badan anak tergolong tinggi. Jadwalkan kunjungan ke dokter spesialis atau fasilitas kesehatan terdekat untuk pemeriksaan lebih lanjut";
+		} else if (notes.equals("VERY OVERLENGTH")){
+			return "Tinggi badan anak tergolong sangat tinggi. Jadwalkan kunjungan ke dokter spesialis atau fasilitas kesehatan terdekat untuk pemeriksaan lebih lanjut";
+		}
+		return null;
+	}
+	
+	public static String getHeadDiameterNotes(String notes){
+		if (notes.equals("VERY MIKROSEFALI")) {
+			return "Lingkar kepala anak tergolong kecil (Mikrosefali). Periksa segera ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lebih lanjut";
+		} if (notes.equals("MIKROSEFALI")) {
+			return "Lingkar kepala anak tergolong kecil (Mikrosefali). Periksa segera ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lebih lanjut";
+		} else if (notes.equals("NORMAL")){
+			return "Lingkar kepala anak tergolong normal. Tetap perhatikan pertumbuhan anak";
+		} else if (notes.equals("MAKROSEFALI")){
+			return "Lingkar kepala anak tergolong besar (Makrosefali). Tetap perhatikan pertumbuhan anak";
+		} else if (notes.equals("VERY MAKROSEFALI")){
+			return "Lingkar kepala anak tergolong besar (Makrosefali). Periksa segera ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lebih lanjut";
+		}
+		return null;
 	}
 	
 }

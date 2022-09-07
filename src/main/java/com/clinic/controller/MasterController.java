@@ -44,16 +44,13 @@ public class MasterController extends BaseController {
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
 		HashMap< String, Object > result = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS;
-		String responseMsg = StatusCode.SUCCESS.toString();
 		String uName = null;
 		try{
 			APIRequest < VaccineMaster > req = getRequestVaccineMaster(input);
 			uName = req.getHeader().getuName();
 			User user = userService.getUserByUsername(uName);
 			if (user == null) {
-				statusTrx = StatusCode.INVALID;
-				responseMsg = StatusCode.INVALID.toString();
-				result.put("message", "User not found");
+				statusTrx = StatusCode.USER_NOT_VALID;
 			} else {
 				switch (req.getHeader().getCommand()) {
 				case "info-list-vaccine":
@@ -72,9 +69,8 @@ public class MasterController extends BaseController {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
-			responseMsg = StatusCode.GENERIC_ERROR.toString();
 		}
-		response.setHeader(new HeaderResponse (statusTrx.getCode(), responseMsg));
+		response.setHeader(new HeaderResponse (statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
 	}

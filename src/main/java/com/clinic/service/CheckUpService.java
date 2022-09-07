@@ -15,4 +15,6 @@ public interface CheckUpService {
 
 	GrowthDtl getGrowthDtl (String mstCode, int recId) throws ParseException;
 
+	CheckUpRecord getCheckHealth ( int userId, int childId, String mstCode) throws Exception;
+
 }

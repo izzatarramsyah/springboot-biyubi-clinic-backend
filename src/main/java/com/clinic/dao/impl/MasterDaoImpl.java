@@ -13,9 +13,11 @@ import org.springframework.stereotype.Repository;
 import com.clinic.config.variable.ApplicationConstant;
 import com.clinic.dao.MasterDao;
 import com.clinic.datamapper.CheckUpMasterMapper;
+import com.clinic.datamapper.MstWLHStandardMapper;
 import com.clinic.datamapper.VaccineMasterMapper;
 import com.clinic.datamapper.VaccineMstDtlMapper;
 import com.clinic.entity.CheckUpMaster;
+import com.clinic.entity.MstWLHStandard;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.entity.VaccineMstDtl;
 
@@ -35,6 +37,9 @@ public class MasterDaoImpl implements MasterDao{
 	public static final String GET_CHECK_UP_MASTER = "SELECT A.*  "
 			+ " FROM TBL_CHECK_UP_MASTER A "
 			+ " WHERE A.CODE = ? ";
+	
+	public static final String GET_LIST_MST_WLH_STANDARD = "SELECT A.* FROM TBL_MST_WLH_STANDARD A "
+			+ " WHERE A.TYPE = ? ";
 	
 	@Autowired
 	@Qualifier(ApplicationConstant.BEAN_JDBC_CLINIC)
@@ -101,4 +106,19 @@ public class MasterDaoImpl implements MasterDao{
 
 	}
 
+	@Override
+	public List<MstWLHStandard> getListMstWLHStandard(String type) throws Exception {
+		LOG.traceEntry();
+		LOG.debug("SQL::{}", GET_LIST_MST_WLH_STANDARD);
+		List < MstWLHStandard > result = new ArrayList <MstWLHStandard>();
+		try{
+			result = jdbcTemplate.query(GET_LIST_MST_WLH_STANDARD, new Object[] { type }, new MstWLHStandardMapper());
+		}catch (Exception e){
+			LOG.error("ERR :: {}", e.getMessage()); 
+		}
+		LOG.debug("RESULT::{}", result);
+		LOG.traceExit();
+		return result;
+	}
+	
 }

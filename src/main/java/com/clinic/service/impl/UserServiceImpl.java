@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService{
 		User user = userDao.getUserByUsername(username);
 		if (user != null) {
 			String decryptedPassword = Security.decrypt(user.getPassword());
-			LOG.info(decryptedPassword + " " + password);
 			if (decryptedPassword.equals(password)) {
 				return true;
 			} else {

@@ -1,5 +1,7 @@
 package com.clinic.api.object;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,20 +15,22 @@ public class ChildData {
 	private String birthDate;
 	private long age;
 	private String gender;
+	private double weight;
 	private String weightCategory;
 	private String weightNotes;
+	private int length;
 	private String lengthCategory;
 	private String lengthNotes;
+	private double headDiameter;
 	private String headDiameterCategory;
 	private String headDiameterNotes;
-	private List < GrowthDtlRs> growthDetail;
+	private List < Double > seriesWeight;
+	private List < Integer > seriesLength;
+	private List < Double > seriesHeadDiameter;
 	
-	public ChildData () {
-		
-	}
+	public ChildData () { }
 	
 	public ChildData setAttribute (Child child) {
-		
 		this.id = child.getId();
 		this.fullname = child.getFullname();
 		if (!Objects.isNull( child.getBirthDate() )) {
@@ -37,8 +41,11 @@ public class ChildData {
 		} else {
 			this.gender = "Laki - Laki";
 		}
+		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+		String currentDate = formatDate.format(new Date());
+		String birthDate = formatDate.format(child.getBirthDate());
+		this.age = Util.calculateMonth(birthDate, currentDate);
 		return this;
-		
 	}
 	
 	public long getAge() {
@@ -129,13 +136,52 @@ public class ChildData {
 		this.headDiameterNotes = headDiameterNotes;
 	}
 
-	public List<GrowthDtlRs> getGrowthDetail() {
-		return growthDetail;
+	public List<Double> getSeriesWeight() {
+		return seriesWeight;
 	}
 
-	public void setGrowthDetail(List<GrowthDtlRs> growthDetail) {
-		this.growthDetail = growthDetail;
+	public void setSeriesWeight(List<Double> seriesWeight) {
+		this.seriesWeight = seriesWeight;
+	}
+
+	public List<Integer> getSeriesLength() {
+		return seriesLength;
+	}
+
+	public void setSeriesLength(List<Integer> seriesLength) {
+		this.seriesLength = seriesLength;
+	}
+
+	public List<Double> getSeriesHeadDiameter() {
+		return seriesHeadDiameter;
+	}
+
+	public void setSeriesHeadDiameter(List<Double> seriesHeadDiameter) {
+		this.seriesHeadDiameter = seriesHeadDiameter;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public double getHeadDiameter() {
+		return headDiameter;
+	}
+
+	public void setHeadDiameter(double headDiameter) {
+		this.headDiameter = headDiameter;
 	}	
-	
 	
 }
