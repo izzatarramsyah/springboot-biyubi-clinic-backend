@@ -30,7 +30,7 @@ public class CheckUpDaoImpl implements CheckUpDao {
 			+ "AND A.MST_CODE = ? ";
 	
 	public static final String GET_GROWTH_DTL = "SELECT A.* "+
-			  " FROM TBL_GROWTH_DTL A "+
+			  " FROM TBL_CHECK_UP_RECORD_DTL A "+
 			  " WHERE A.MST_CODE = ? "+
 			  " AND A.REC_ID = ? ";
 	

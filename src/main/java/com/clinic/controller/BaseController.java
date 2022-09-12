@@ -26,11 +26,10 @@ public class BaseController {
 	     ObjectMapper mapper = new ObjectMapper();
 	     T t = (T) mapper.readValue(content, valueType);
 	     LOG.traceExit();
-	      //return (T) mapper.readValue(content, valueType);
 	     return t;  
 	 }
 	
-	 public APIRequest<User> getRequestUser(String content) throws Exception {
+	 public APIRequest < User > getRequestUser(String content) throws Exception {
 		 Gson gson = new Gson();
 		 Type fooType = new TypeToken<APIRequest<User>>(){}.getType();
 		 LOG.info("REQ::{}", content.toString());
@@ -44,18 +43,11 @@ public class BaseController {
 		 return gson.fromJson(content, fooType);
 	 }
 	 
-	 public APIRequest<Child> getRequestChild(String content) throws Exception {
+	 public APIRequest < Child > getRequestChild(String content) throws Exception {
 		 Gson gson = new Gson();
 		 Type fooType = new TypeToken<APIRequest<Child>>(){}.getType();
 		 LOG.info("REQ::{}", content.toString());
 		 return gson.fromJson(content, fooType);
 	 }
-	 
-	 public APIRequest<VaccineMaster> getRequestVaccineMaster(String content) throws Exception {
-		 Gson gson = new Gson();
-		 Type fooType = new TypeToken<APIRequest<VaccineMaster>>(){}.getType();
-		 LOG.info("REQ::{}", content.toString());
-		 return gson.fromJson(content, fooType);
-	 }
-	 
-}
+	
+}	

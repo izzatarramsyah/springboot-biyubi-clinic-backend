@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.api.object.HeaderRequest;
 import com.clinic.api.object.HeaderResponse;
 import com.clinic.api.object.InfoRq;
 import com.clinic.api.request.APIRequest;
@@ -45,14 +46,16 @@ public class MasterController extends BaseController {
 		HashMap< String, Object > result = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS;
 		String uName = null;
+		String command = null;
 		try{
-			APIRequest < VaccineMaster > req = getRequestVaccineMaster(input);
-			uName = req.getHeader().getuName();
+			HeaderRequest req = (HeaderRequest) ObjectMapper(input, HeaderRequest.class);
+			uName = req.getuName();
+			command = req.getCommand();
 			User user = userService.getUserByUsername(uName);
 			if (user == null) {
 				statusTrx = StatusCode.USER_NOT_VALID;
 			} else {
-				switch (req.getHeader().getCommand()) {
+				switch ( command ) {
 				case "info-list-vaccine":
 					result.put("object", masterService.getListMstVaccine());
 					break;
