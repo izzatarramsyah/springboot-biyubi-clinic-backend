@@ -2,10 +2,13 @@ package com.clinic.service.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinic.constant.Constant;
+import com.clinic.controller.UserController;
 import com.clinic.dao.ApplicationConfigDao;
 import com.clinic.dao.MasterDao;
 import com.clinic.entity.ApplicationConfig;
@@ -15,7 +18,8 @@ import com.clinic.service.MasterService;
 
 @Service
 public class MasterServiceImpl implements MasterService{
-	
+	private static final Logger LOG = LogManager.getLogger(MasterServiceImpl.class);
+
 	@Autowired
 	MasterDao mstDao;
 	

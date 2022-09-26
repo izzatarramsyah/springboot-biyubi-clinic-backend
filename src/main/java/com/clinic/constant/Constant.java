@@ -3,9 +3,9 @@ package com.clinic.constant;
 public class Constant {
 	
 	/*APP CONFIG*/
-	public static final String APP_NAME = "BackendScheduler";
+	public static final String APP_NAME = "BackendAdmin";
 
-	public static final String INSTANCE_NAME = "Notif";
+	public static final String INSTANCE_NAME = "graph";
 	
 	/* TYPE */
 	
