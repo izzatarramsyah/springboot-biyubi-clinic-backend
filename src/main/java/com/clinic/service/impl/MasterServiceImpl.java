@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinic.constant.Constant;
+import com.clinic.dao.ApplicationConfigDao;
 import com.clinic.dao.MasterDao;
+import com.clinic.entity.ApplicationConfig;
 import com.clinic.entity.CheckUpMaster;
-import com.clinic.entity.MstWLHStandard;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.service.MasterService;
 
@@ -17,6 +18,9 @@ public class MasterServiceImpl implements MasterService{
 	
 	@Autowired
 	MasterDao mstDao;
+	
+	@Autowired
+	ApplicationConfigDao applicationConfigDao;
 
 	@Override
 	public List < VaccineMaster > getListMstVaccine() throws Exception {
@@ -39,10 +43,19 @@ public class MasterServiceImpl implements MasterService{
 		if (type.equals(Constant.WEIGHT)) category = Constant.VERY_UNDERWEIGHT;
 		if (type.equals(Constant.LENGTH)) category = Constant.VERY_UNDERLENGTH;
 		if (type.equals(Constant.HEAD_CIRCUMFERENCE)) category = Constant.VERY_MIKROSEFALI;
-		for (MstWLHStandard list : mstDao.getListMstWLHStandard(type)) {
-			if (list.getMonth() == month) {
-				if (list.getValue() <= value) {
-					category = list.getCategory();
+		List < ApplicationConfig > appConf = applicationConfigDao.get(Constant.APP_NAME, Constant.INSTANCE_NAME);
+		for (ApplicationConfig config : appConf) {
+			String[] paramName = config.getParamName().split("_");
+			String paramType = paramName[0];
+			int paramMonth = Integer.parseInt(paramName[1]);
+			String[] paramValue = config.getParamValue().split("_");
+			double paramVal = Double.parseDouble(paramValue[0]);
+			String paramCategory = paramValue[1];
+			if (paramType.equals(type)) {
+				if (paramMonth == month) {
+					if (paramVal <= value) {
+						category = paramCategory;
+					}
 				}
 			}
 		}
