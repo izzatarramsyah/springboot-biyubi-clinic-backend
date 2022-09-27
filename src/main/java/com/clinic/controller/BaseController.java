@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import com.clinic.api.request.APIRequest;
+import com.clinic.api.object.AppConfig;
 import com.clinic.api.object.InfoRq;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
@@ -50,4 +51,11 @@ public class BaseController {
 		 return gson.fromJson(content, fooType);
 	 }
 	
+	 public APIRequest < AppConfig > getAppConfig(String content) throws Exception {
+		 Gson gson = new Gson();
+		 Type fooType = new TypeToken<APIRequest< AppConfig >>(){}.getType();
+		 LOG.info("REQ::{}", content.toString());
+		 return gson.fromJson(content, fooType);
+	 }
+	 
 }	
