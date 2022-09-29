@@ -15,19 +15,6 @@ public class Child {
 	private Date updatedDtm;
 	private String updatedBy;
 	
-	public Child(){
-		
-	}
-	
-	public Child setAttribute(int userId, String fullname, Date birthDate, String gender, String notes){
-		this.userId = userId;
-		this.fullname = fullname;
-		this.birthDate = birthDate;
-		this.gender = gender;
-		this.notes = notes;
-		return this;
-	}
-	
 	public int getId() { 
 		return id;
 	}

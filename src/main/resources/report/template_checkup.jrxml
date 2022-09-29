@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.9.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e11b30c8-1c68-4297-a105-0e92cc1d0c5f">
+	<parameter name="parentName" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="childName" class="java.lang.String"/>
+	<parameter name="birthDate" class="java.lang.String"/>
+	<parameter name="age" class="java.lang.String"/>
+	<parameter name="checkUpDate" class="java.lang.String"/>
+	<parameter name="weight" class="java.lang.String"/>
+	<parameter name="length" class="java.lang.String"/>
+	<parameter name="headDiameter" class="java.lang.String"/>
+	<parameter name="weightNotes" class="java.lang.String"/>
+	<parameter name="lengthNotes" class="java.lang.String"/>
+	<parameter name="headDiameterNotes" class="java.lang.String"/>
+	<parameter name="admin" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="107" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="100" width="555" height="1" uuid="4bbc0750-70ed-4c22-9221-5fd946169bdf">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="160" y="68" width="240" height="32" uuid="3c41c312-ae94-41dc-8673-7c2ad644297c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[BIYUBI APP 
+LAPORAN PEMERIKSAAN JEJAK MEDIS ANAK]]></text>
+			</staticText>
+			<image>
+				<reportElement x="228" y="0" width="142" height="68" uuid="8eb99fe3-5e76-438b-9b8a-0c15cf159556"/>
+				<imageExpression><![CDATA["img/logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="586" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="-6" width="555" height="26" uuid="60e02550-8437-44a0-a24a-04fedfd608dc"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[A. DATA DIRI ORANG TUA DAN ANAK]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="554" height="1" uuid="ae3df8b8-b3e3-412b-8233-502a6cda405d">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="20" width="1" height="130" uuid="16f6d7f8-fcbe-4288-a993-734bff3667f3">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="554" y="20" width="1" height="130" uuid="15264c43-ecf4-4347-8cc7-7a6de784dc27">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="10" y="30" width="90" height="20" uuid="559d2732-ee42-45fd-90b6-ce641b6a31f5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1. Nama Orang Tua]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="50" width="90" height="20" uuid="d1564ebc-68e1-4815-a283-0be7fa933d7d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2. Alamat]]></text>
+			</staticText>
+			<line>
+				<reportElement x="554" y="180" width="1" height="100" uuid="75f94dd6-8677-4a03-b525-5a516085d0ef">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="280" y="180" width="1" height="100" uuid="b76e02ac-68c8-4ff3-b49f-6e905ebb60ec">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="150" y="180" width="1" height="100" uuid="058a9381-4366-4149-96f6-8efc08a29027">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="180" width="554" height="1" uuid="551f74c4-2773-44f3-af55-4249e6fd8ee3">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="230" width="555" height="1" uuid="7252f318-a98a-493d-ac41-f014f0542834">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="180" width="1" height="100" uuid="7f5456ab-4a95-4dd4-8248-31d34c8922a1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="280" width="555" height="1" uuid="a1672667-01ca-4514-8b2f-123a07b51df5">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="161" width="553" height="19" uuid="5d6a8b71-0c42-4c2d-b5c0-61fc2eab280a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[B. DATA PENCATATAN PEMERIKSAAN MEDIS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="300" width="555" height="1" uuid="34417f67-53f9-48ae-ad99-5ab0540a11d6">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="300" width="1" height="220" uuid="15b24045-4f03-4dce-8b6c-d34a70d2168f">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="1" y="320" width="554" height="1" uuid="90eb0732-429c-420b-b08f-492a49d8cc2b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="1" y="301" width="554" height="19" uuid="56174404-2a07-4b5b-bdfc-34d6c56df734"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CATATAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="321" width="109" height="18" uuid="eaa1a417-8344-4fd9-bc33-0718d5df2bfe"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Berat Badan : ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="554" y="300" width="1" height="220" uuid="8b003e28-a4ab-412e-8673-75a5ea25b1ff">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="520" width="555" height="1" uuid="c0b3cb93-f839-47c0-89ab-e8d78c246888">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="105" y="50" width="219" height="20" uuid="74b7be8f-55ea-4374-b68c-14282fcf706a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="70" width="219" height="20" uuid="2d321925-7303-420d-b51a-519f0826393c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{childName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="30" width="5" height="20" uuid="040fcfc4-111d-4011-b40b-452f0cdb008a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="50" width="5" height="20" uuid="8e20fa14-53db-4fa3-95e6-03b5e3df52e0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="70" width="5" height="20" uuid="d2533a92-ecac-4c77-a77f-87a15bb0b4ca"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="70" width="90" height="20" uuid="cd844e0e-933d-4bfe-a2dc-49fab70c38f2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3. Nama Anak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="180" width="149" height="50" uuid="7136b8b9-a52c-4863-9d90-e0c201a31ae8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tanggal Pemeriksaan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="90" width="90" height="20" uuid="3460029b-e12d-4f81-816f-6497c588c623"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4. Tanggal Lahir]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="110" width="90" height="20" uuid="74238ae2-373a-445c-baee-0de5e3df8e30"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5. Usia]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="105" y="90" width="219" height="20" uuid="e68d9639-5304-411e-95bc-3bfc6f1f2fe4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{birthDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="90" width="5" height="20" uuid="b30cf9a7-6330-4840-a18e-59f3314288bf"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="110" width="5" height="20" uuid="aa2b5d70-fb57-49e6-a254-64a8314a351e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="410" y="180" width="1" height="100" uuid="1d187633-8c73-4b94-9299-15182a7d529a">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="150" y="180" width="130" height="50" uuid="aa71e607-6716-4959-86ac-285f2d2f2c21"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Berat Badan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="180" width="130" height="50" uuid="11eeb514-bc7d-4af8-9768-3f34ed5f88fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Panjang Badan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="180" width="144" height="50" uuid="d199de74-327e-4d5f-b613-cdc0012399e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lingkar Kepala]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="105" y="110" width="219" height="20" uuid="a11ac674-279e-4b3f-9872-6d00ad5e83e9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="30" width="219" height="20" uuid="2ff6af20-5bf7-46aa-8801-d6d4905a300d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{parentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="240" width="150" height="30" uuid="9dbe25b2-5f95-4ce5-b04c-68c7fdf038fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{checkUpDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="240" width="130" height="30" uuid="21143370-141f-4041-a051-4add5b2c6e04"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{weight}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="240" width="130" height="30" uuid="aa379246-fd66-4ee5-bb1d-18127b338ae6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{length}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="240" width="144" height="30" uuid="f3ef638e-6b9a-4e99-a2de-44d97e6c43ef"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{headDiameter}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="339" width="544" height="46" uuid="11acc7b4-6316-49b3-b997-1a4d0391413b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{weightNotes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="385" width="109" height="18" uuid="3cae0aa0-a86d-4ad8-b0d7-bcb584be4a8c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Panjang Badan : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="10" y="403" width="545" height="46" uuid="7d0435c6-2062-4ec7-b6f6-9301c29559e4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lengthNotes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="449" width="109" height="18" uuid="2d995e56-73e6-400b-b9be-ece362c70db3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lingkar Kepala : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="10" y="467" width="543" height="46" uuid="fb6c8ba4-40ed-4dbe-8c2e-c3d51ea90f44"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{headDiameterNotes}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="150" width="554" height="1" uuid="a0df9bf6-7cbc-4fed-8989-8c3045001586">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

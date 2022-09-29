@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.clinic.api.object.VaccineSchedule;
 import com.clinic.dao.MasterDao;
+import com.clinic.dao.UserDao;
 import com.clinic.dao.VaccineDao;
+import com.clinic.entity.Child;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.entity.VaccineMstDtl;
 import com.clinic.entity.VaccineRecord;
@@ -26,9 +28,19 @@ public class VaccineServiceImpl implements VaccineService{
 	@Autowired
 	MasterDao masterDao;
 	
+	@Autowired
+	UserDao userDao;
+	
+	@Override
+	public boolean addVaccineRecord ( VaccineRecord vaccine ) throws Exception {
+		return vaccineDao.addVaccineRecord( vaccine );
+	}
+	
 	@Override
 	public List < VaccineSchedule > getSchedule(int userId, int childId) throws Exception {
 		List < VaccineSchedule >  listSchedule = new ArrayList < VaccineSchedule >();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		Child child = userDao.getChildByID( childId );
 		for (VaccineMaster vm : masterDao.getListMstVaccine()) {
 			for (VaccineMstDtl vmDtl : masterDao.getListVaccineMstDtl(vm.getVaccineCode())) {
 				VaccineSchedule schedule = new VaccineSchedule();
@@ -39,11 +51,15 @@ public class VaccineServiceImpl implements VaccineService{
 				schedule.setVaccineCode(vm.getVaccineCode());
 				schedule.setExpDays(vm.getExpDays());
 				schedule.setBatch(vmDtl.getBatch());
+				Calendar schDate = Calendar.getInstance();
+				schDate.setTime(child.getBirthDate());
+				int countDays = 31 * vmDtl.getBatch();
+				schDate.add(Calendar.DATE, countDays);
+				schedule.setScheduleDate( Util.formatDate(sdf.parse(sdf.format(schDate.getTime()))) );
 				VaccineRecord vaccineRecord = vaccineDao.getVaccineRecord(userId, childId, vmDtl.getBatch(), vmDtl.getVaccineCode());
 				if (vaccineRecord != null) {
 					schedule.setVaccineDate(Util.formatDate(vaccineRecord.getVaccineDate()));
 					schedule.setNotes(vaccineRecord.getNotes());
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					Calendar expDate = Calendar.getInstance();
 					expDate.setTime(vaccineRecord.getVaccineDate());
 					expDate.add(Calendar.DATE, vm.getExpDays());
@@ -53,6 +69,16 @@ public class VaccineServiceImpl implements VaccineService{
 			}
 		}
 		return listSchedule;
+	}
+
+	@Override
+	public VaccineRecord getVaccineRecord(int userId, int childId, int batch, String vaccineCode) throws Exception {
+		return vaccineDao.getVaccineRecord(userId, childId, batch, vaccineCode);
+	}
+
+	@Override
+	public boolean updateVaccineRecord(VaccineRecord vaccineRecord) throws Exception {
+		return vaccineDao.updateVaccineRecord(vaccineRecord);
 	}
 
 }

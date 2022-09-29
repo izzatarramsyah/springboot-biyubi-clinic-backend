@@ -10,6 +10,7 @@ public class VaccineSchedule {
 	private int id;
 	private int userId;
 	private int childId;
+	private String scheduleDate;
 	private String vaccineDate;
 	private String expDate;
 	private String notes;
@@ -79,6 +80,12 @@ public class VaccineSchedule {
 	}
 	public void setExpDate(String expDate) {
 		this.expDate = expDate;
+	}
+	public String getScheduleDate() {
+		return scheduleDate;
+	}
+	public void setScheduleDate(String scheduleDate) {
+		this.scheduleDate = scheduleDate;
 	}
 
 

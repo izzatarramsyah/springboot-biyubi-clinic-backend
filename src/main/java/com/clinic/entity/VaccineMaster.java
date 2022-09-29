@@ -1,6 +1,7 @@
 package com.clinic.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class VaccineMaster {
 
@@ -14,6 +15,7 @@ public class VaccineMaster {
 	private String createdBy;
 	private Date lastUpdDtm;
 	private String lastUpdBy;
+	private List < VaccineMstDtl > detail;
 	
 	public String getVaccineCode() {
 		return vaccineCode;
@@ -74,6 +76,12 @@ public class VaccineMaster {
 	}
 	public void setLastUpdBy(String lastUpdBy) {
 		this.lastUpdBy = lastUpdBy;
+	}
+	public List<VaccineMstDtl> getDetail() {
+		return detail;
+	}
+	public void setDetail(List<VaccineMstDtl> detail) {
+		this.detail = detail;
 	}	
 	
 }

@@ -8,10 +8,16 @@ import com.clinic.entity.GrowthDtl;
 
 public interface CheckUpDao {
 			
-	CheckUpRecord getCheckHealth ( int userId, int childId, String mstCode) throws Exception;
+	CheckUpRecord getCheckUpRecord ( int userId, int childId, String mstCode) throws Exception;
 	
 	GrowthDtl getGrowthDtl (String mstCode, int recId);
 
-	List < CheckUpRecord > getListCheckHealth ( int userId, int childId ) throws Exception;
+	List < CheckUpRecord > getListCheckUpRecord ( int userId, int childId ) throws Exception;
+	
+	int addCheckUpRecord ( CheckUpRecord checkHealth ) throws Exception;
+
+	boolean addGrowthDtl (GrowthDtl growthDtl);
+
+	boolean updateGrowthDtl (GrowthDtl growthDtl);
 
 }

@@ -11,9 +11,9 @@ public class CheckUpSchedule {
 	private String checkUpDate;
 	private int nextCheckUpDays;
 	private String scheduleDate;
-	private int weight;
+	private double weight;
 	private int length;
-	private int headDiameter;
+	private double headDiameter;
 	private String notes;
 	
 	public String getCode() {
@@ -64,10 +64,10 @@ public class CheckUpSchedule {
 	public void setScheduleDate(String scheduleDate) {
 		this.scheduleDate = scheduleDate;
 	}
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
-	public void setWeight(int weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 	public int getLength() {
@@ -76,10 +76,10 @@ public class CheckUpSchedule {
 	public void setLength(int length) {
 		this.length = length;
 	}
-	public int getHeadDiameter() {
+	public double getHeadDiameter() {
 		return headDiameter;
 	}
-	public void setHeadDiameter(int headDiameter) {
+	public void setHeadDiameter(double headDiameter) {
 		this.headDiameter = headDiameter;
 	}
 	public String getNotes() {

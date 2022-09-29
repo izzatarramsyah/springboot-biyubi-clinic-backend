@@ -11,12 +11,26 @@ public interface UserService {
 
 	User getUserByUsername (String username) throws Exception;
 	
+	User getUserByFullname(String fullname) throws Exception;
+	
 	Child getChildByID (int id) throws Exception;
 
 	List < Child > getChildByUserID (int id) throws Exception;
+	
+	boolean insertUser (User User) throws Exception;
+	
+	int insertChild (Child child) throws Exception;
+
+	boolean updateUser (User user) throws Exception;
+	
+	boolean changeStatusUser (User user) throws Exception;
+	
+	boolean updateChild (Child child) throws Exception;
 	
 	boolean checkValidUser (String username, String password) throws Exception;
 
 	boolean updateLastActivity(User user) throws Exception;
 	
+	List < User > getUser() throws Exception;
+
 }

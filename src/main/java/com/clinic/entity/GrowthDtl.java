@@ -6,9 +6,9 @@ public class GrowthDtl {
 
 	private String mstCode;
 	private int recId;
-	private int weight;
+	private double weight;
 	private int length;
-	private int headDiameter;
+	private double headDiameter;
 	private String notes;
 	private Date createdDtm;
 	private String createdBy;
@@ -27,10 +27,10 @@ public class GrowthDtl {
 	public void setRecId(int recId) {
 		this.recId = recId;
 	}
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
-	public void setWeight(int weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 	public int getLength() {
@@ -39,10 +39,10 @@ public class GrowthDtl {
 	public void setLength(int length) {
 		this.length = length;
 	}
-	public int getHeadDiameter() {
+	public double getHeadDiameter() {
 		return headDiameter;
 	}
-	public void setHeadDiameter(int headDiameter) {
+	public void setHeadDiameter(double headDiameter) {
 		this.headDiameter = headDiameter;
 	}
 	public String getNotes() {

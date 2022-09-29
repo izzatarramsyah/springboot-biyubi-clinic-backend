@@ -1,10 +1,18 @@
 package com.clinic.constant;
 
 public enum StatusCode {
+	
+	SUCCESS_PROCESS("00","Data berhasil diproses"),
 	SUCCESS("00","Success"),
-	USER_NOT_FOUND("01","Data not found"),
-	USER_NOT_VALID("02","User is not active"),
-	GENERIC_ERROR("99","The system has encountered an error. Please contact your administrator");
+	DATA_NOT_FOUND("01","Data tidak ditemukan"),
+	FAILED_PROCESS("02","Data gagal diproses. Silahkan hubungi administrator anda"),
+	ALREDY_REGISTERD("03","Data gagal diproses. Data sudah terdaftar"),
+	USER_NOT_FOUND("04","User tidak ditemukan"),
+	INVALID_SESSION("05","Invalid Session"),
+	INVALID("06","Invalid"),
+	VALID_SESSION("07","Kami mendeteksi Anda masih aktif di browser lain, Silakan logout dulu dan coba lagi"),
+	USER_NOT_VALID("08","User is not active"),
+	GENERIC_ERROR("99","Sistem mengalami kesalahan. Silahkan hubungi administrator anda");
 	
 	private String code;
 	private String statusDesc;

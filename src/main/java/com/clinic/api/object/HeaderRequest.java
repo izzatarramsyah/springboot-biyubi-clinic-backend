@@ -2,26 +2,11 @@ package com.clinic.api.object;
 
 public class HeaderRequest {
 
-	private String requestId;
-	private String requestDS;
 	private String session;
 	private String uName;
 	private String command;
-	private String startDate;
-	private String endDate;
+	private String channel;
 	
-	public String getRequestId() {
-		return requestId;
-	}
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
-	public String getRequestDS() {
-		return requestDS;
-	}
-	public void setRequestDS(String requestDS) {
-		this.requestDS = requestDS;
-	}
 	public String getSession() {
 		return session;
 	}
@@ -40,17 +25,11 @@ public class HeaderRequest {
 	public void setCommand(String command) {
 		this.command = command;
 	}
-	public String getStartDate() {
-		return startDate;
+	public String getChannel() {
+		return channel;
 	}
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
-	public String getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
-	
+
 }

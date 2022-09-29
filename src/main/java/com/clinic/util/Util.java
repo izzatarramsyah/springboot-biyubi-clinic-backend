@@ -1,23 +1,29 @@
 package com.clinic.util;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.clinic.constant.Constant;
 
 public class Util {
-	
+
 	public static String formatDateWithTime(Date date){
-		SimpleDateFormat formatDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+		SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		return formatDate.format(date);
 	}
 	
 	public static String formatDate(Date date){
-		SimpleDateFormat formatDate = new SimpleDateFormat("dd-MMM-yyyy");
+		SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
+		return formatDate.format(date);
+	}
+	
+	public static String formatDate1(Date date){
+		SimpleDateFormat formatDate = new SimpleDateFormat("MM-dd-yyyy");
 		return formatDate.format(date);
 	}
 	
@@ -26,12 +32,49 @@ public class Util {
 		return dateStr;
 	}
 
-	public static long calculateMonth(String birthDate, String currentDate) {
+	public static Date formatDate1(String str) throws Exception{
+		Date dateStr = new SimpleDateFormat("dd-MM-yyyy").parse(str); 
+		return dateStr;
+	}
+	
+	public static Date formatDateWithTime(String str) throws Exception{
+		Date dateStr = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(str); 
+		return dateStr;
+	}
+
+
+    public static long calculateMonth(String birthDate, String currentDate) {
     	long  diff = ChronoUnit.MONTHS.between(
 	            LocalDate.parse(birthDate).withDayOfMonth(1),
 	            LocalDate.parse(currentDate).withDayOfMonth(1));
         return diff;
     }
+    
+	public static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int columns = rsmd.getColumnCount();
+		for (int x = 1; x <= columns; x++) {
+			if (columnName.equals( rsmd.getColumnName( x ) )) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static String formatPhoneNo(String msisdn){
+		if(msisdn != null && msisdn.length() <= 2){
+			return "";
+		}
+		if(msisdn == null || "".equalsIgnoreCase(msisdn)
+				|| "62".equalsIgnoreCase(msisdn.substring(0, 2))){
+			return msisdn;
+		}
+		if("0".equalsIgnoreCase(msisdn.substring(0, 1))){
+			return "62" + msisdn.substring(1);
+		}else{
+			return "";
+		}
+	}
 	
 	public static String getWeightNotes (String notes) {
 		if (notes.equals(Constant.VERY_UNDERWEIGHT)) {
