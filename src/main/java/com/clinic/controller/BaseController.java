@@ -3,10 +3,10 @@ package com.clinic.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.lang.reflect.Type; 
 
 import com.clinic.api.request.APIRequest;
-import com.clinic.api.object.CheckUpRequest;
+import com.clinic.api.object.CheckUpRequest; 
 import com.clinic.api.object.ChildRegistration;
 import com.clinic.api.object.InfoRq;
 import com.clinic.api.object.VaccineRequest;

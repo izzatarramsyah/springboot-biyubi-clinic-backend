@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import com.clinic.config.properties.AppProperties;
 import com.clinic.config.variable.ApplicationConstant;
 
-@Configuration
+@Configuration 
 public class RestTemplateConfig {
     @Autowired
     @Qualifier(ApplicationConstant.BEAN_APP_CONFIG)
