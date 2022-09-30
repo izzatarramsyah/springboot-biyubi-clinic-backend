@@ -33,8 +33,8 @@ public class ExportExcel {
 		Workbook workbook = new HSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("Jadwal Rekam Medis");
 	    sheet.setPrintGridlines(false);
-	    sheet.addMergedRegion(new CellRangeAddress(3,3,0,4));
-	    sheet.addMergedRegion(new CellRangeAddress(2,2,0,4));
+	    sheet.addMergedRegion(new CellRangeAddress(3,3,0,2));
+	    sheet.addMergedRegion(new CellRangeAddress(2,2,0,2));
 	    
 	    //Create Header 1
         CellStyle styleMuf = workbook.createCellStyle();
@@ -80,6 +80,8 @@ public class ExportExcel {
         style.setBorderTop(BorderStyle.MEDIUM);
         
 	    Row header = sheet.createRow(5);
+	    header.createCell(0).setCellValue("No");
+	    header.getCell(0).setCellStyle(style);
 	    header.createCell(1).setCellValue("Jadwal Pemeriksaan");
 	    header.getCell(1).setCellStyle(style);
 	    header.createCell(2).setCellValue("Bulan Ke-");
@@ -175,8 +177,8 @@ public class ExportExcel {
 		Workbook workbook = new HSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("Jadwal Rekam Imunisasi");
 	    sheet.setPrintGridlines(false);
-	    sheet.addMergedRegion(new CellRangeAddress(3,3,0,4));
-	    sheet.addMergedRegion(new CellRangeAddress(2,2,0,4));
+	    sheet.addMergedRegion(new CellRangeAddress(3,3,0,2));
+	    sheet.addMergedRegion(new CellRangeAddress(2,2,0,2));
 
 	    //Create Header 1
         CellStyle styleMuf = workbook.createCellStyle();

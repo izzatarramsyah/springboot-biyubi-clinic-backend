@@ -14,6 +14,7 @@ public enum StatusCode {
 	RECORD_ALREADY_INSERTED("08","Data telah di tambahkan sebelumnya. Silahkan cek di menu jadwal"),
 	USER_NOT_VALID("09","User is not active"),
 	USER_NOT_FOUND("10","User tidak ditemukan"),
+	CHILD_NOT_FOUND("11","Data anak tidak ditemukan"),
 	GENERIC_ERROR("99","Sistem mengalami kesalahan. Silahkan hubungi administrator anda");
 	
 	private String code;

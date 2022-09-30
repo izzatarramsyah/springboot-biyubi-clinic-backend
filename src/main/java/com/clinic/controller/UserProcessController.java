@@ -113,60 +113,67 @@ public class UserProcessController extends BaseController {
 							  
 						  } else {
 							  
-							  UserData userData = new UserData().setAttribute(user);
-							  List < ChildData > listChildData = new ArrayList < ChildData >();
-							  
 							  Child child = userService.getChildByID(req.getPayload().getChildId()); 
+							  if ( child == null ) {
+								
+								  statusTrx = StatusCode.CHILD_NOT_FOUND;
+
+							  } else { 
 								  
-							  ChildData childData = new ChildData().setAttribute(child);
-								  
-							  List < Double > seriesWeight = new ArrayList < Double >();
-							  List < Integer > seriesLength = new ArrayList < Integer >();
-						      List < Double > seriesHeadDiameter = new ArrayList < Double >();
-								
-						      int batch = 0;
-						      for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
-						    	  CheckUpRecord checkUp = checkUpService.getCheckUpRecord(child.getUserId(), child.getId(), lst.getCode());
-						    	  if (checkUp != null) {
-						    		  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
-						    		  batch = lst.getBatch();
-						    		  seriesWeight.add((double) growthDtl.getWeight());
-						    		  seriesLength.add(growthDtl.getLength());
-						    		  seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
-						    	  }
-						      }
-								
-						      childData.setSeriesWeight(seriesWeight);
-						      childData.setSeriesLength(seriesLength);
-						      childData.setSeriesHeadDiameter(seriesHeadDiameter);
-								
-						      if (seriesWeight.size() > 0) {
-						    	  int index = seriesWeight.size() - 1;
-						    	  String weightCategory = masterService.category("WEIGHT", batch, seriesWeight.get(index));
-						    	  childData.setWeight( seriesWeight.get(index) );
-						    	  childData.setWeightCategory( weightCategory );
-						    	  childData.setWeightNotes( Util.getWeightNotes(weightCategory) );
-						      }
-								
-						      if (seriesLength.size() > 0) {
-						    	  int index = seriesLength.size() - 1;
-						    	  String lengthCategory = masterService.category("LENGTH", batch, seriesLength.get(index));
-						    	  childData.setLength( seriesLength.get(index) );
-						    	  childData.setLengthCategory( lengthCategory );
-						    	  childData.setLengthNotes( Util.getLengthNotes(lengthCategory) );
-						      }
-								
-						      if (seriesHeadDiameter.size() > 0) {
-						    	  int index = seriesHeadDiameter.size() - 1;
-						    	  String headDiameterCategory = masterService.category("HEAD CIRCUMFERENCE", batch, seriesHeadDiameter.get(index));
-						    	  childData.setHeadDiameter( seriesHeadDiameter.get(index) );
-						    	  childData.setHeadDiameterCategory( headDiameterCategory );
-						    	  childData.setHeadDiameterNotes( Util.getHeadDiameterNotes(headDiameterCategory) );
-						      }
-				
-						      listChildData.add(childData);
-						      userData.setChildData(listChildData);
-						      responseObj.put("object", userData);
+								  UserData userData = new UserData().setAttribute(user);
+								  List < ChildData > listChildData = new ArrayList < ChildData >();
+									  
+								  ChildData childData = new ChildData().setAttribute(child);
+									  
+								  List < Double > seriesWeight = new ArrayList < Double >();
+								  List < Integer > seriesLength = new ArrayList < Integer >();
+							      List < Double > seriesHeadDiameter = new ArrayList < Double >();
+									
+							      int batch = 0;
+							      for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
+							    	  CheckUpRecord checkUp = checkUpService.getCheckUpRecord(child.getUserId(), child.getId(), lst.getCode());
+							    	  if (checkUp != null) {
+							    		  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
+							    		  batch = lst.getBatch();
+							    		  seriesWeight.add((double) growthDtl.getWeight());
+							    		  seriesLength.add(growthDtl.getLength());
+							    		  seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
+							    	  }
+							      }
+									
+							      childData.setSeriesWeight(seriesWeight);
+							      childData.setSeriesLength(seriesLength);
+							      childData.setSeriesHeadDiameter(seriesHeadDiameter);
+									
+							      if (seriesWeight.size() > 0) {
+							    	  int index = seriesWeight.size() - 1;
+							    	  String weightCategory = masterService.category("WEIGHT", batch, seriesWeight.get(index));
+							    	  childData.setWeight( seriesWeight.get(index) );
+							    	  childData.setWeightCategory( weightCategory );
+							    	  childData.setWeightNotes( Util.getWeightNotes(weightCategory) );
+							      }
+									
+							      if (seriesLength.size() > 0) {
+							    	  int index = seriesLength.size() - 1;
+							    	  String lengthCategory = masterService.category("LENGTH", batch, seriesLength.get(index));
+							    	  childData.setLength( seriesLength.get(index) );
+							    	  childData.setLengthCategory( lengthCategory );
+							    	  childData.setLengthNotes( Util.getLengthNotes(lengthCategory) );
+							      }
+									
+							      if (seriesHeadDiameter.size() > 0) {
+							    	  int index = seriesHeadDiameter.size() - 1;
+							    	  String headDiameterCategory = masterService.category("HEAD CIRCUMFERENCE", batch, seriesHeadDiameter.get(index));
+							    	  childData.setHeadDiameter( seriesHeadDiameter.get(index) );
+							    	  childData.setHeadDiameterCategory( headDiameterCategory );
+							    	  childData.setHeadDiameterNotes( Util.getHeadDiameterNotes(headDiameterCategory) );
+							      }
+					
+							      listChildData.add(childData);
+							      userData.setChildData(listChildData);
+							      responseObj.put("object", userData);
+							      
+							  }
 							  
 						  }
 						  

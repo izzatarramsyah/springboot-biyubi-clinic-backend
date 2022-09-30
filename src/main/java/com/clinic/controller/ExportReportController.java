@@ -87,53 +87,81 @@ public class ExportReportController extends BaseController {
 				
 				switch ( req.getHeader().getCommand() ) { 
 				case "schedule-checkup":
+					
 					LOG.info("COMMAND : SCHEDULE-CHECKUP");
+					
 					List < CheckUpSchedule > checkUpSchedule = checkUpService.getSchedule( req.getPayload().getUserId(), req.getPayload().getChildId());
 					excelAsByte = ExportExcel.checkUp(checkUpSchedule, userService.getChildByID( req.getPayload().getChildId() ) );
+					
 					break;
+				
 				case "schedule-vaccine":
+					
 					LOG.info("COMMAND : SCHEDULE-VACCINE");
+					
 					List < VaccineSchedule > vaccineSchedule = vaccineService.getSchedule( req.getPayload().getUserId(), req.getPayload().getChildId());
 					excelAsByte = ExportExcel.vaccine(vaccineSchedule, userService.getChildByID( req.getPayload().getChildId() ));
+					
 					break;
+				
 				case "mst-vaccine":
+					
 					LOG.info("COMMAND : MST-VACCINE");
+					
 					List < VaccineMaster > listVaccineMst = masterService.getListMstVaccine();
 					excelAsByte = ExportExcel.vaccineMst(listVaccineMst);
+					
 					break;
+				
 				case "mst-checkup":
+					
 					LOG.info("COMMAND : MST-CHECKUP");
+					
 					List < CheckUpMaster > listCheckUpMst = masterService.getListMstCheckUp();
 					excelAsByte = ExportExcel.checkUpMst(listCheckUpMst);
+					
 					break;
+				
 				case "list-user":
+					
 					LOG.info("COMMAND : LIST-USER");
+					
 					List < User > listUser = userService.getUser();
 					for (User usr : listUser) {
 						List < Child > child = userService.getChildByUserID(usr.getId());
 						usr.setChild(child);
 					}
+					
 					excelAsByte = ExportExcel.listUser(listUser);
+					
 					break;
+				
 				case "list-audit-trail":
+					
 					LOG.info("COMMAND : AUDIT-TRAIL");
+					
 					List < AuditTrail > listAuditTrail = new ArrayList < AuditTrail > ();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date startDate = null; Date endDate = null;
+					
 					try {
 						startDate = sdf.parse(req.getPayload().getStartDate() + " 00:00:00");
 					} catch (ParseException e) {
 						LOG.error("ERR :: {} " +e);
 					}
+					
 					try {
 						endDate = sdf.parse(req.getPayload().getEndDate() + " 23:59:59");
 					} catch (ParseException e) {
 						LOG.error("ERR :: {} " +e);
 					}
+					
 					listAuditTrail = auditTrailService.getAuditTrail(req.getPayload().getUsername(), startDate, endDate);
 					LOG.info(listAuditTrail.size() + " " + Util.formatDate(startDate) + " " + Util.formatDate(endDate));
 					excelAsByte = ExportExcel.auditTrail(listAuditTrail, Util.formatDate(startDate), Util.formatDate(endDate));
+					
 					break;
+				
 				default:
 					break;
 				}
@@ -164,66 +192,72 @@ public class ExportReportController extends BaseController {
 			Map<String, Object> object = new HashMap<String, Object>();
 
 			UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
-			
 			if (userAdmin != null) {
 				
 				User user = userService.getUserByID( req.getPayload().getUserId() );
-				Child child = userService.getChildByID( req.getPayload().getChildId() );
-				
-				switch ( req.getHeader().getCommand() ) { 
-				case "report-checkup":
-					LOG.info("COMMAND : REPORT-CHECKUP");
-			
-					CheckUpRecord record = checkUpService.getCheckUpRecord( user.getId(), child.getId(), req.getPayload().getMstCode() );
-					GrowthDtl growth = checkUpService.getGrowthDtl( req.getPayload().getMstCode(), record.getId());
-					CheckUpMaster cm = masterService.getMstCheckUpByCode( req.getPayload().getMstCode() );
+				if ( user != null ) {
 					
-					String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
-					String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
-					String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
+					Child child = userService.getChildByID( req.getPayload().getChildId() );
+					if ( child != null) {
+						
+						switch ( req.getHeader().getCommand() ) { 
+						case "report-checkup":
+							LOG.info("COMMAND : REPORT-CHECKUP");
 					
-					object.put("parentName", user.getFullname());
-					object.put("address", user.getAddress());
-					object.put("childName", child.getFullname());
-					object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
-					object.put("birthDate", formatDate.format(child.getBirthDate()));
-					object.put("checkUpDate", Util.formatDate(record.getCheckUpDate()));
-					object.put("weight", String.valueOf(growth.getWeight()) + " KG");
-					object.put("length", String.valueOf(growth.getLength()) + " CM");
-					object.put("headDiameter", String.valueOf(growth.getHeadDiameter()) + " CM");
-					object.put("weightNotes", Util.getWeightNotes (weightCategory) );
-					object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
-					object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));
-					pdfAsByte = ExportPDF.download(object, "report/template_checkup.jrxml");
+							CheckUpRecord record = checkUpService.getCheckUpRecord( user.getId(), child.getId(), req.getPayload().getMstCode() );
+							GrowthDtl growth = checkUpService.getGrowthDtl( req.getPayload().getMstCode(), record.getId());
+							CheckUpMaster cm = masterService.getMstCheckUpByCode( req.getPayload().getMstCode() );
+							
+							String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
+							String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
+							String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
+							
+							object.put("parentName", user.getFullname());
+							object.put("address", user.getAddress());
+							object.put("childName", child.getFullname());
+							object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
+							object.put("birthDate", formatDate.format(child.getBirthDate()));
+							object.put("checkUpDate", Util.formatDate(record.getCheckUpDate()));
+							object.put("weight", String.valueOf(growth.getWeight()) + " KG");
+							object.put("length", String.valueOf(growth.getLength()) + " CM");
+							object.put("headDiameter", String.valueOf(growth.getHeadDiameter()) + " CM");
+							object.put("weightNotes", Util.getWeightNotes (weightCategory) );
+							object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
+							object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));
+							pdfAsByte = ExportPDF.download(object, "report/template_checkup.jrxml");
+							
+							break;
+						
+						case "report-vaccine":
+							LOG.info("COMMAND : REPORT-VACCINE");
+							
+							VaccineRecord recordd = vaccineService.getVaccineRecord( user.getId(), child.getId(), req.getPayload().getBatch(), req.getPayload().getMstCode() );
+							VaccineMaster vm = masterService.getMstVaccineByCode( req.getPayload().getMstCode() );
+							
+							object.put("parentName", user.getFullname());
+							object.put("address", user.getAddress());
+							object.put("childName", child.getFullname());
+							object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
+							object.put("birthDate", formatDate.format(child.getBirthDate()));
+							object.put("vaccineDate", Util.formatDate(recordd.getVaccineDate()));
+							SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							Calendar expDate = Calendar.getInstance();
+							expDate.setTime(recordd.getVaccineDate());
+							expDate.add(Calendar.DATE, vm.getExpDays());
+							object.put("expDate", Util.formatDate(sdf.parse(sdf.format(expDate.getTime()))));
+							object.put("vaccineName", vm.getVaccineName());
+							object.put("batch", String.valueOf(recordd.getBatch()));
+							object.put("vaccineNotes", recordd.getNotes());
+							pdfAsByte = ExportPDF.download(object, "report/template_vaccine.jrxml");
+							
+							break;
+						
+						default:
+							break;
+						}
+						
+					}
 					
-					break;
-				
-				case "report-vaccine":
-					LOG.info("COMMAND : REPORT-VACCINE");
-					
-					VaccineRecord recordd = vaccineService.getVaccineRecord( user.getId(), child.getId(), req.getPayload().getBatch(), req.getPayload().getMstCode() );
-					VaccineMaster vm = masterService.getMstVaccineByCode( req.getPayload().getMstCode() );
-					
-					object.put("parentName", user.getFullname());
-					object.put("address", user.getAddress());
-					object.put("childName", child.getFullname());
-					object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
-					object.put("birthDate", formatDate.format(child.getBirthDate()));
-					object.put("vaccineDate", Util.formatDate(recordd.getVaccineDate()));
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					Calendar expDate = Calendar.getInstance();
-					expDate.setTime(recordd.getVaccineDate());
-					expDate.add(Calendar.DATE, vm.getExpDays());
-					object.put("expDate", Util.formatDate(sdf.parse(sdf.format(expDate.getTime()))));
-					object.put("vaccineName", vm.getVaccineName());
-					object.put("batch", String.valueOf(recordd.getBatch()));
-					object.put("vaccineNotes", recordd.getNotes());
-					pdfAsByte = ExportPDF.download(object, "report/template_vaccine.jrxml");
-					
-					break;
-				
-				default:
-					break;
 				}
 				
 			}

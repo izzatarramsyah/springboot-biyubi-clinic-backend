@@ -28,6 +28,7 @@ import com.clinic.service.AuditTrailService;
 import com.clinic.service.MasterService;
 import com.clinic.service.UserAdminService;
 import com.clinic.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin
 @RestController
@@ -195,7 +196,7 @@ public class MasterController extends BaseController {
 						LOG.info("COMMAND : CHANGE STATUS");
 						result = masterService.changeStatusVaccineMaster(req.getPayload());
 						if (result) {
-							value2 = Constant.VALUE_UPDATE_MST_VACCINE.replaceAll("<vaccineName>", req.getPayload().getVaccineName()).
+							value2 = Constant.VALUE_CHANGE_STATUS_MST_VACCINE.replaceAll("<vaccineName>", req.getPayload().getVaccineName()).
 									replaceAll("<status>", req.getPayload().getStatus());
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHANGE_STATUS_MST_VACCINE, req.getHeader().getuName(), value2 ) );
 						} 
@@ -221,6 +222,7 @@ public class MasterController extends BaseController {
 		}
 		
 		response.setHeader(new HeaderResponse (statusTrx.getCode(), statusTrx.getStatusDesc()));
+		LOG.info("RESULT:{}", response );
 		LOG.traceExit();
 		return response;
 	}
