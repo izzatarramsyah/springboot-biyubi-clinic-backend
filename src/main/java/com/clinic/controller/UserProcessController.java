@@ -96,80 +96,77 @@ public class UserProcessController extends BaseController {
 				UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
 				if (userAdmin == null) {
 					
-					statusTrx = StatusCode.USER_NOT_FOUND;
+					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
 					
 				} else { 
 					
 					switch ( req.getHeader().getCommand() ) { 
 					
 					  case "info-user":
-						  
+						   
 						  LOG.info("COMMAND : INFO-USER");
 						  
 						  User user = userService.getUserByID(req.getPayload().getUserId());
 						  if (user == null) {
 							  
-							  statusTrx = StatusCode.DATA_NOT_FOUND;
+							  statusTrx = StatusCode.USER_NOT_FOUND;
 							  
 						  } else {
 							  
 							  UserData userData = new UserData().setAttribute(user);
 							  List < ChildData > listChildData = new ArrayList < ChildData >();
 							  
-							  for (Child child : userService.getChildByUserID(req.getPayload().getUserId()) ) {
+							  Child child = userService.getChildByID(req.getPayload().getChildId()); 
 								  
-								  ChildData childData = new ChildData().setAttribute(child);
+							  ChildData childData = new ChildData().setAttribute(child);
 								  
-								  List < Double > seriesWeight = new ArrayList < Double >();
-								  List < Integer > seriesLength = new ArrayList < Integer >();
-								  List < Double > seriesHeadDiameter = new ArrayList < Double >();
-
-								  int batch = 0;
-								  for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
-									  CheckUpRecord checkUp = checkUpService.getCheckUpRecord(child.getUserId(), child.getId(), lst.getCode());
-									  if (checkUp != null) {
-										  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
-										  batch = lst.getBatch();
-										  seriesWeight.add((double) growthDtl.getWeight());
-										  seriesLength.add(growthDtl.getLength());
-										  seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
-									  }
-								  }
-								  
-								  childData.setSeriesWeight(seriesWeight);
-								  childData.setSeriesLength(seriesLength);
-								  childData.setSeriesHeadDiameter(seriesHeadDiameter);
-								  
-								  if (seriesWeight.size() > 0) {
-									  int index = seriesWeight.size() - 1;
-									  String weightCategory = masterService.category("WEIGHT", batch, seriesWeight.get(index));
-									  childData.setWeight( seriesWeight.get(index) );
-									  childData.setWeightCategory( weightCategory );
-									  childData.setWeightNotes( Util.getWeightNotes(weightCategory) );
-								  }
-								  
-								  if (seriesLength.size() > 0) {
-									  int index = seriesLength.size() - 1;
-									  String lengthCategory = masterService.category("LENGTH", batch, seriesLength.get(index));
-									  childData.setLength( seriesLength.get(index) );
-									  childData.setLengthCategory( lengthCategory );
-									  childData.setLengthNotes( Util.getLengthNotes(lengthCategory) );
-								  }
-								  
-								  if (seriesHeadDiameter.size() > 0) {
-									  int index = seriesHeadDiameter.size() - 1;
-									  String headDiameterCategory = masterService.category("HEAD CIRCUMFERENCE", batch, seriesHeadDiameter.get(index));
-									  childData.setHeadDiameter( seriesHeadDiameter.get(index) );
-									  childData.setHeadDiameterCategory( headDiameterCategory );
-									  childData.setHeadDiameterNotes( Util.getHeadDiameterNotes(headDiameterCategory) );
-								  }
-								  
-								  listChildData.add(childData);
-								  
-							  }
+							  List < Double > seriesWeight = new ArrayList < Double >();
+							  List < Integer > seriesLength = new ArrayList < Integer >();
+						      List < Double > seriesHeadDiameter = new ArrayList < Double >();
 								
-							  userData.setChildData(listChildData);
-							  responseObj.put("object", userData);
+						      int batch = 0;
+						      for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
+						    	  CheckUpRecord checkUp = checkUpService.getCheckUpRecord(child.getUserId(), child.getId(), lst.getCode());
+						    	  if (checkUp != null) {
+						    		  GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
+						    		  batch = lst.getBatch();
+						    		  seriesWeight.add((double) growthDtl.getWeight());
+						    		  seriesLength.add(growthDtl.getLength());
+						    		  seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
+						    	  }
+						      }
+								
+						      childData.setSeriesWeight(seriesWeight);
+						      childData.setSeriesLength(seriesLength);
+						      childData.setSeriesHeadDiameter(seriesHeadDiameter);
+								
+						      if (seriesWeight.size() > 0) {
+						    	  int index = seriesWeight.size() - 1;
+						    	  String weightCategory = masterService.category("WEIGHT", batch, seriesWeight.get(index));
+						    	  childData.setWeight( seriesWeight.get(index) );
+						    	  childData.setWeightCategory( weightCategory );
+						    	  childData.setWeightNotes( Util.getWeightNotes(weightCategory) );
+						      }
+								
+						      if (seriesLength.size() > 0) {
+						    	  int index = seriesLength.size() - 1;
+						    	  String lengthCategory = masterService.category("LENGTH", batch, seriesLength.get(index));
+						    	  childData.setLength( seriesLength.get(index) );
+						    	  childData.setLengthCategory( lengthCategory );
+						    	  childData.setLengthNotes( Util.getLengthNotes(lengthCategory) );
+						      }
+								
+						      if (seriesHeadDiameter.size() > 0) {
+						    	  int index = seriesHeadDiameter.size() - 1;
+						    	  String headDiameterCategory = masterService.category("HEAD CIRCUMFERENCE", batch, seriesHeadDiameter.get(index));
+						    	  childData.setHeadDiameter( seriesHeadDiameter.get(index) );
+						    	  childData.setHeadDiameterCategory( headDiameterCategory );
+						    	  childData.setHeadDiameterNotes( Util.getHeadDiameterNotes(headDiameterCategory) );
+						      }
+				
+						      listChildData.add(childData);
+						      userData.setChildData(listChildData);
+						      responseObj.put("object", userData);
 							  
 						  }
 						  
@@ -252,7 +249,7 @@ public class UserProcessController extends BaseController {
 				UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
 				if (userAdmin == null) {
 					
-					statusTrx = StatusCode.USER_NOT_FOUND;
+					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
 					
 				} else { 
 					
@@ -278,7 +275,7 @@ public class UserProcessController extends BaseController {
 								  
 								  user = userService.getUserByFullname( req.getPayload().getFullname() );
 								  String message = MailHelper.registrationUserMessage( user );
-								  mailService.sendEmail(user.getEmail(), mailTitleRegisterdAccount, message, null, null);
+								  //mailService.sendEmail(user.getEmail(), mailTitleRegisterdAccount, message, null, null);
 								  String value2 = Constant.VALUE_INSERT_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<joinDate>", Util.formatDate(new Date()));
 								  auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_REGISTRATION, req.getHeader().getuName(), value2) );
 								  userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
@@ -298,8 +295,8 @@ public class UserProcessController extends BaseController {
 							  boolean isUpdateUser = userService.updateUser( req.getPayload() );
 							  if (isUpdateUser) {
 								  
-								  String value2 = Constant.VALUE_UPDATE_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<email>", user.getEmail())
-										  .replaceAll("<phone_no>", user.getPhone_no()).replaceAll("<address>", user.getAddress());
+								  String value2 = Constant.VALUE_UPDATE_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<email>", req.getPayload().getEmail())
+										  .replaceAll("<phone_no>", req.getPayload().getPhone_no()).replaceAll("<address>", req.getPayload().getAddress());
 								  auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_UPDATE, req.getHeader().getuName(), value2 ) );
 								  userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
 							  
@@ -326,7 +323,7 @@ public class UserProcessController extends BaseController {
 							  boolean isChanged = userService.changeStatusUser( req.getPayload() );
 							  if (isChanged) {
 								  
-								  String value2 = Constant.VALUE_CHANGE_STATUS_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<status>", user.getStatus());
+								  String value2 = Constant.VALUE_CHANGE_STATUS_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<status>", req.getPayload().getStatus());
 								  auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_STATUS_UPDATE, req.getHeader().getuName(), value2 ) );
 								  userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
 							 
@@ -382,7 +379,7 @@ public class UserProcessController extends BaseController {
 			UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
 			if (userAdmin == null) {
 				
-				statusTrx = StatusCode.USER_NOT_FOUND;
+				statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
 				
 			} else { 
 				
@@ -443,7 +440,7 @@ public class UserProcessController extends BaseController {
 								
 							  String message = MailHelper.registrationChildMessage(user.getFullname(), child.getFullname());
 							  String filename = "Laporan Pemeriksaan Medis " + child.getFullname() + "(" + checkUpDate + ").pdf";
-							  mailService.sendEmail(user.getEmail(), mailTitleRegisterdChild, message, filename, pdfAsByte);
+							  //mailService.sendEmail(user.getEmail(), mailTitleRegisterdChild, message, filename, pdfAsByte);
 						      
 							  String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
 						    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));

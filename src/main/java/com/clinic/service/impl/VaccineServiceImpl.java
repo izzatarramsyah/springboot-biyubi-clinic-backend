@@ -3,6 +3,7 @@ package com.clinic.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class VaccineServiceImpl implements VaccineService{
 	
 	@Override
 	public boolean addVaccineRecord ( VaccineRecord vaccine ) throws Exception {
+		vaccine.setCreatedDtm( new Date() );
+		vaccine.setCreatedBy( "SYSTEM" );
 		return vaccineDao.addVaccineRecord( vaccine );
 	}
 	
@@ -78,6 +81,8 @@ public class VaccineServiceImpl implements VaccineService{
 
 	@Override
 	public boolean updateVaccineRecord(VaccineRecord vaccineRecord) throws Exception {
+		vaccineRecord.setUpdatedDtm( new Date() );
+		vaccineRecord.setUpdatedBy( "SYSTEM" );
 		return vaccineDao.updateVaccineRecord(vaccineRecord);
 	}
 

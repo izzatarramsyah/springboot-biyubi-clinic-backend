@@ -7,11 +7,13 @@ public enum StatusCode {
 	DATA_NOT_FOUND("01","Data tidak ditemukan"),
 	FAILED_PROCESS("02","Data gagal diproses. Silahkan hubungi administrator anda"),
 	ALREDY_REGISTERD("03","Data gagal diproses. Data sudah terdaftar"),
-	USER_NOT_FOUND("04","User tidak ditemukan"),
+	USER_ADMIN_NOT_FOUND("04","User Admin tidak ditemukan"),
 	INVALID_SESSION("05","Invalid Session"),
 	INVALID("06","Invalid"),
 	VALID_SESSION("07","Kami mendeteksi Anda masih aktif di browser lain, Silakan logout dulu dan coba lagi"),
-	USER_NOT_VALID("08","User is not active"),
+	RECORD_ALREADY_INSERTED("08","Data telah di tambahkan sebelumnya. Silahkan cek di menu jadwal"),
+	USER_NOT_VALID("09","User is not active"),
+	USER_NOT_FOUND("10","User tidak ditemukan"),
 	GENERIC_ERROR("99","Sistem mengalami kesalahan. Silahkan hubungi administrator anda");
 	
 	private String code;

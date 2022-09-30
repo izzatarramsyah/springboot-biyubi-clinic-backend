@@ -64,20 +64,28 @@ public class MasterController extends BaseController {
 				
 				UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getuName() );
 				if (userAdmin == null) {
-					statusTrx = StatusCode.USER_NOT_FOUND;
+					
+					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
+					
 				} else {
+					
 					switch ( req.getCommand() ) {
 					case "info-list-vaccine":
+						
 						LOG.info("COMMAND : INFO-LIST-VACCINE");
 						result.put("object", masterService.getListMstVaccine());
+						
 						break;
 					case "info-list-checkup":
+						
 						LOG.info("COMMAND : INFO-LIST-VACCINE");
 						result.put("object", masterService.getListMstCheckUp());
+						
 						break;
 					default:
 						break;
 					}
+					
 				}
 				
 				userAdminService.updateLastActivity(userAdmin);
@@ -86,21 +94,32 @@ public class MasterController extends BaseController {
 				
 				User user = userService.getUserByUsername( req.getuName() );
 				if (user == null) {
+					
 					statusTrx = StatusCode.USER_NOT_VALID;
+					
 				} if (!user.getStatus().equals("ACTIVE")) {
+					
 					statusTrx = StatusCode.USER_NOT_VALID;
+					
 				} else {
+					
 					switch ( req.getCommand() ) {
 					case "info-list-vaccine":
+						
 						LOG.info("COMMAND : INFO-LIST-VACCINE");
 						result.put("object", masterService.getListMstVaccine());
+						
 						break;
 					case "info-list-checkup":
+						
 						LOG.info("COMMAND : INFO-LIST-VACCINE");
 						result.put("object", masterService.getListMstCheckUp());
+						
 						break;
 					default:
+						break;
 					}
+					
 				}
 				
 				user.setLastActivity(new Date());
@@ -140,12 +159,13 @@ public class MasterController extends BaseController {
 				
 				if (userAdmin == null) {
 					
-					statusTrx = StatusCode.USER_NOT_FOUND;
+					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
 					
 				} else {
 					
 					switch ( req.getHeader().getCommand() ) {
 					case "save":
+						
 						LOG.info("COMMAND : SAVE");
 						result = masterService.addVaccineMaster( req.getPayload() );
 						if (result) {
@@ -155,8 +175,10 @@ public class MasterController extends BaseController {
 									replaceAll("<batch>", String.valueOf(req.getPayload().getBatch()));
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_MST_VACCINE, req.getHeader().getuName(), value2 ) );
 						} 
+						
 						break;
 					case "update":
+						
 						LOG.info("COMMAND : UPDATE");
 						result = masterService.updateVaccineMaster( req.getPayload() );
 						if (result) {
@@ -166,7 +188,10 @@ public class MasterController extends BaseController {
 									replaceAll("<notes>", String.valueOf(req.getPayload().getNotes()));
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_UPDATE_MST_VACCINE, req.getHeader().getuName(), value2 ) );
 						} 
+						
+						break;
 					case "changeStatus":
+						
 						LOG.info("COMMAND : CHANGE STATUS");
 						result = masterService.changeStatusVaccineMaster(req.getPayload());
 						if (result) {
@@ -174,6 +199,8 @@ public class MasterController extends BaseController {
 									replaceAll("<status>", req.getPayload().getStatus());
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHANGE_STATUS_MST_VACCINE, req.getHeader().getuName(), value2 ) );
 						} 
+						
+						break;
 					default:
 						break;
 					}
@@ -223,6 +250,7 @@ public class MasterController extends BaseController {
 					
 					switch ( req.getHeader().getCommand() ) {
 					case "save":
+						
 						LOG.info("COMMAND : SAVE");
 						result = masterService.addCheckUpMaster(req.getPayload());
 						if (result) {
@@ -231,8 +259,10 @@ public class MasterController extends BaseController {
 									replaceAll("<nextDays>", String.valueOf(req.getPayload().getNextCheckUpDays()));
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_MST_CHECK_UP, req.getHeader().getuName(), value2 ));
 						} 
+						
 						break;
 					case "update":
+						
 						LOG.info("COMMAND : UPDATE");
 						result = masterService.updateCheckUpMaster(req.getPayload());
 						if (result) {
@@ -241,7 +271,10 @@ public class MasterController extends BaseController {
 									replaceAll("<nextDays>", String.valueOf(req.getPayload().getNextCheckUpDays()));
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_UPDATE_MST_CHECK_UP, req.getHeader().getuName(), value2 ) );
 						} 
+						
+						break;
 					case "changeStatus":
+						
 						LOG.info("COMMAND : CHANGE STATUS");
 						result = masterService.changeStatusCheckUpMaster(req.getPayload());
 						if (result) {
@@ -249,12 +282,16 @@ public class MasterController extends BaseController {
 									replaceAll("<status>", req.getPayload().getStatus());
 							auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHANGE_STATUS_MST_CHECK_UP, req.getHeader().getuName(), value2 ) );
 						} 
+						
+						break;
 					default:
 						break;
 					}
 					
 					if (!result) {
+						
 						statusTrx = StatusCode.FAILED_PROCESS;
+						
 					}
 					
 					userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));

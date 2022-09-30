@@ -92,9 +92,6 @@ public class RecordController extends BaseController {
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
 		HashMap< String, Object > responseObject = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS_PROCESS;
-		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-		boolean result = false;
-		String activity = null;
 		
 		try {
 			
@@ -111,75 +108,79 @@ public class RecordController extends BaseController {
 				} else {
 					
 					VaccineRecord vaccineRecord = req.getPayload();
-					
-					switch ( req.getHeader().getCommand() ) {
-					case "save":
+					VaccineRecord check = vaccineService.getVaccineRecord(vaccineRecord.getUserId(), vaccineRecord.getChildId(), 
+							vaccineRecord.getBatch(), vaccineRecord.getVaccineCode());
+					VaccineMaster vm = masterService.getMstVaccineByCode( vaccineRecord.getVaccineCode() );
+					User user = userService.getUserByID( vaccineRecord.getUserId() );
+					if (user == null) {
 						
-						LOG.info("SAVE");
-
-						vaccineRecord.setCreatedDtm( new Date() );
-						vaccineRecord.setCreatedBy( "SYSTEM" );
-						result = vaccineService.addVaccineRecord( vaccineRecord );
-						activity = Constant.ACTIVITY_ADD_VACCINE_RECORD;
+						statusTrx = StatusCode.USER_NOT_FOUND;
 						
-						break;
-					case "update":
-						
-						LOG.info("UPDATE");
-
-						vaccineRecord.setUpdatedDtm( new Date() );
-						vaccineRecord.setUpdatedBy( "SYSTEM" );
-						result = vaccineService.updateVaccineRecord( vaccineRecord );
-						activity = Constant.ACTIVITY_UPDATE_VACCINE_RECORD;
-						
-						break;
-					default:
-						break;
-					}
-					
-					if (!result) {
-						statusTrx = StatusCode.FAILED_PROCESS;
 					} else {
 						
-						vaccineRecord = vaccineService.getVaccineRecord(vaccineRecord.getUserId(), vaccineRecord.getChildId(), 
-								vaccineRecord.getBatch(), vaccineRecord.getVaccineCode());
-						new ObjectMapper().writer().writeValueAsString( vaccineRecord );
-						User user = userService.getUserByID(vaccineRecord.getUserId());
-						Child child = userService.getChildByID(vaccineRecord.getChildId());
-						VaccineMaster vm = masterService.getMstVaccineByCode(vaccineRecord.getVaccineCode());
-		
-						Map<String, Object> object = new HashMap<String, Object>();
-						object.put("parentName", user.getFullname());
-						object.put("address", user.getAddress());
-						object.put("childName", child.getFullname());
-						object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
-						object.put("birthDate", formatDate.format(child.getBirthDate()));
-						object.put("vaccineDate", Util.formatDate(vaccineRecord.getVaccineDate()));
-						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-						Calendar expDate = Calendar.getInstance();
-						expDate.setTime(vaccineRecord.getVaccineDate());
-						expDate.add(Calendar.DATE, vm.getExpDays());
-						object.put("expDate", Util.formatDate(sdf.parse(sdf.format(expDate.getTime()))));
-						object.put("vaccineName", vm.getVaccineName());
-						object.put("batch", String.valueOf(vaccineRecord.getBatch()));
-						object.put("vaccineNotes", vaccineRecord.getNotes());
-						byte[] pdfAsByte = ExportPDF.download(object, "report/template_vaccine.jrxml");
-						
-						String message = MailHelper.vaccineMessage(user.getFullname());
-						String filename = "Laporan Imunisasi " + child.getFullname() + "(" + Util.formatDate(vaccineRecord.getVaccineDate()) + ").pdf";
-						mailService.sendEmail(user.getEmail(), mailTitleEditVaccineRecord, message, filename, pdfAsByte);
-						
-						String value2 = Constant.VALUE_RECORD_VACCINE.replaceAll("<childName>", child.getFullname()).replaceAll("<vaccineName>", vm.getVaccineName()).replaceAll("<batch>", String.valueOf(vaccineRecord.getBatch())).replaceAll("<notes>", vaccineRecord.getNotes());
-						auditTrailService.saveAuditTrail(new AuditTrail( activity, req.getHeader().getuName(), value2) );
-						userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
+						Child child = userService.getChildByID( vaccineRecord.getChildId() );
+						if ( child != null) {
+							
+							switch ( req.getHeader().getCommand() ) {
+							case "save":
+								
+								LOG.info("SAVE");
+								
+								if (check == null) {
+									
+									if (vaccineService.addVaccineRecord( vaccineRecord ) ){
+										//sendMailVaccine(vaccineRecord);
+										String value2 = Constant.VALUE_RECORD_VACCINE.replaceAll("<childName>", child.getFullname()).replaceAll("<vaccineName>", vm.getVaccineName())
+												.replaceAll("<batch>", String.valueOf(vaccineRecord.getBatch())).replaceAll("<notes>", vaccineRecord.getNotes());
+										auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_VACCINE_RECORD, req.getHeader().getuName(), value2) );
+									}
+									
+								} else {
+									
+									statusTrx = StatusCode.RECORD_ALREADY_INSERTED;
+									
+								}
+								
+								break;
+							case "update":
+								
+								LOG.info("UPDATE");
+
+								if (check != null) {
+									
+									if ( vaccineService.updateVaccineRecord( vaccineRecord ) ) {
+										//sendMailVaccine(vaccineRecord);
+										String value2 = Constant.VALUE_RECORD_VACCINE.replaceAll("<childName>", child.getFullname()).replaceAll("<vaccineName>", vm.getVaccineName())
+												.replaceAll("<batch>", String.valueOf(vaccineRecord.getBatch())).replaceAll("<notes>", vaccineRecord.getNotes());
+										auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_UPDATE_VACCINE_RECORD, req.getHeader().getuName(), value2) );
+									}
+									
+								} else {
+									
+									statusTrx = StatusCode.FAILED_PROCESS;
+									
+								}
+								
+								break;
+							default:
+								break;
+							}
+							
+						} else {
+							
+							statusTrx = StatusCode.FAILED_PROCESS;
+							
+						}
+					
 					}
-						
+					
 				}
 				
 			}
 			
+			userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
 			response.setPayload(responseObject);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
@@ -191,6 +192,37 @@ public class RecordController extends BaseController {
 		return response;
 	}
 		
+	private void sendMailVaccine(VaccineRecord vaccineRecord) throws Exception{
+		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+
+		User user = userService.getUserByID(vaccineRecord.getUserId());
+		Child child = userService.getChildByID(vaccineRecord.getChildId());
+		VaccineMaster vm = masterService.getMstVaccineByCode(vaccineRecord.getVaccineCode());
+
+		Map<String, Object> object = new HashMap<String, Object>();
+		object.put("parentName", user.getFullname());
+		object.put("address", user.getAddress());
+		object.put("childName", child.getFullname());
+		object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
+		object.put("birthDate", formatDate.format(child.getBirthDate()));
+		object.put("vaccineDate", Util.formatDate(vaccineRecord.getVaccineDate()));
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		Calendar expDate = Calendar.getInstance();
+		expDate.setTime(vaccineRecord.getVaccineDate());
+		expDate.add(Calendar.DATE, vm.getExpDays());
+		object.put("expDate", Util.formatDate(sdf.parse(sdf.format(expDate.getTime()))));
+		object.put("vaccineName", vm.getVaccineName());
+		object.put("batch", String.valueOf(vaccineRecord.getBatch()));
+		object.put("vaccineNotes", vaccineRecord.getNotes());
+		byte[] pdfAsByte = ExportPDF.download(object, "report/template_vaccine.jrxml");
+		
+		String message = MailHelper.vaccineMessage(user.getFullname());
+		String filename = "Laporan Imunisasi " + child.getFullname() + "(" + Util.formatDate(vaccineRecord.getVaccineDate()) + ").pdf";
+		mailService.sendEmail(user.getEmail(), mailTitleEditVaccineRecord, message, filename, pdfAsByte);
+		
+	}
+	
+	
 	@RequestMapping(value = "/checkUpRecord", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public APIResponse<?> checkUpRecord(@RequestBody String input) {
 		
@@ -198,10 +230,8 @@ public class RecordController extends BaseController {
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
 		HashMap< String, Object > responseObject = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS_PROCESS;
-		boolean result = false;
-		String activity = null;
 		
-		try{
+		try {
 			
 			LOG.info("CHECKUP RECORD");
 			APIRequest < CheckUpRequest > req = getCheckUpRequest(input);
@@ -211,74 +241,88 @@ public class RecordController extends BaseController {
 				
 				if (userAdmin == null) {
 					
-					statusTrx = StatusCode.USER_NOT_FOUND;
+					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
 					
 				} else {
 					
-					switch ( req.getHeader().getCommand() ) {
-					case "save":
+					int userId = req.getPayload().getUserId();
+					int childId = req.getPayload().getChildId();
+					String mstCode = req.getPayload().getMstCode();
+							
+					CheckUpRecord check = checkUpService.getCheckUpRecord( userId, childId, mstCode);
+					User user = userService.getUserByID( userId );
+					LOG.info(new ObjectMapper().writer().writeValueAsString( user ) );
+					if (user == null) {
 						
-						LOG.info("SAVE");
-
-						result = checkUpService.addCheckUpRecord( req.getPayload() );
-						activity = Constant.ACTIVITY_ADD_CHECK_UP_RECORD;
+						statusTrx = StatusCode.USER_NOT_FOUND;
 						
-						break;
-					case "update":
-						
-						LOG.info("UPDATE");
-
-						result = checkUpService.updateGrowthDtl( req.getPayload() );
-						activity = Constant.ACTIVITY_UPDATE_CHECK_UP_RECORD;
-						
-						break;
-					default:
-						break;
-					}
-					
-					if (!result) {
-						statusTrx = StatusCode.FAILED_PROCESS;
 					} else {
-						User user = userService.getUserByID(req.getPayload().getUserId());
-						Child child = userService.getChildByID(req.getPayload().getChildId());
-						CheckUpRecord record = checkUpService.getCheckUpRecord(user.getId(), child.getId(), req.getPayload().getMstCode());
-						GrowthDtl growth = checkUpService.getGrowthDtl( req.getPayload().getMstCode(), record.getId());
-						CheckUpMaster cm = masterService.getMstCheckUpByCode(req.getPayload().getMstCode());
 						
-						String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
-						String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
-						String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
+						Child child = userService.getChildByID( childId );
+						LOG.info(new ObjectMapper().writer().writeValueAsString( child ) );
+
+						if ( child != null) {
+							
+							switch ( req.getHeader().getCommand() ) {
+							case "save":
+								
+								LOG.info("SAVE");
+								
+								if ( check == null ) {
+									
+									if (checkUpService.addCheckUpRecord( req.getPayload() )) {
+										//sendMailCheckUp(req.getPayload());
+										CheckUpRecord record = checkUpService.getCheckUpRecord(user.getId(), child.getId(), mstCode);
+										GrowthDtl growth = checkUpService.getGrowthDtl( mstCode, record.getId());
+										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
+									    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));
+										auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_CHECK_UP_RECORD, req.getHeader().getuName(), value2 ) );
+									}
+									
+								} else {
+									
+									statusTrx = StatusCode.RECORD_ALREADY_INSERTED;
+
+								}
+								
+								break;
+							case "update":
+								
+								LOG.info("UPDATE");
+								
+								if ( check != null ) {
+									
+									if (checkUpService.updateGrowthDtl( req.getPayload() )) {
+										//sendMailCheckUp(req.getPayload());
+										CheckUpRecord record = checkUpService.getCheckUpRecord(user.getId(), child.getId(), mstCode);
+										GrowthDtl growth = checkUpService.getGrowthDtl( mstCode, record.getId());
+										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
+									    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));
+										auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_UPDATE_CHECK_UP_RECORD, req.getHeader().getuName(), value2 ) );
+									}
+									
+								} else { 
+									statusTrx = StatusCode.FAILED_PROCESS;
+								}
+								
+								break;
+							default:
+								break;
+							}
+							
+						} else {
+							
+							statusTrx = StatusCode.FAILED_PROCESS;
+							
+						}
 						
-						Map<String, Object> object = new HashMap<String, Object>();
-						SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-						object.put("parentName", user.getFullname());
-						object.put("address", user.getAddress());
-						object.put("childName", child.getFullname());
-						object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
-						object.put("birthDate", formatDate.format(child.getBirthDate()));
-						object.put("checkUpDate", Util.formatDate(record.getCheckUpDate()));
-						object.put("weight", String.valueOf(growth.getWeight()) + " KG");
-						object.put("length", String.valueOf(growth.getLength()) + " CM");
-						object.put("headDiameter", String.valueOf(growth.getHeadDiameter()) + " CM");
-						object.put("weightNotes", Util.getWeightNotes (weightCategory) );
-						object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
-						object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));
-						byte[] pdfAsByte = ExportPDF.download(object, "report/template_checkup.jrxml");
-						
-						String message = MailHelper.checkUpMessage(user.getFullname());
-						String filename = "Laporan Pemeriksaan Medis " + child.getFullname() + "(" + Util.formatDate(record.getCheckUpDate()) + ").pdf";
-						mailService.sendEmail(user.getEmail(), mailTitleEditCheckUpRecord, message, filename, pdfAsByte);
-						
-						String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
-					    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));
-						auditTrailService.saveAuditTrail(new AuditTrail( activity, req.getHeader().getuName(), value2 ) );
-						userAdminService.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
 					}
-					
+		
 				}
 				
 			}
 
+			userAdminService.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
 			response.setPayload(responseObject);
 			
 		}catch (Exception e){
@@ -290,6 +334,35 @@ public class RecordController extends BaseController {
 		response.setHeader(new HeaderResponse (statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
+	}
+	
+	private void sendMailCheckUp(User user, Child child, CheckUpRecord record, GrowthDtl growth, CheckUpMaster cm) throws Exception{
+
+		
+		String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
+		String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
+		String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
+		
+		Map<String, Object> object = new HashMap<String, Object>();
+		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+		object.put("parentName", user.getFullname());
+		object.put("address", user.getAddress());
+		object.put("childName", child.getFullname());
+		object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
+		object.put("birthDate", formatDate.format(child.getBirthDate()));
+		object.put("checkUpDate", Util.formatDate(record.getCheckUpDate()));
+		object.put("weight", String.valueOf(growth.getWeight()) + " KG");
+		object.put("length", String.valueOf(growth.getLength()) + " CM");
+		object.put("headDiameter", String.valueOf(growth.getHeadDiameter()) + " CM");
+		object.put("weightNotes", Util.getWeightNotes (weightCategory) );
+		object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
+		object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));
+		byte[] pdfAsByte = ExportPDF.download(object, "report/template_checkup.jrxml");
+		
+		String message = MailHelper.checkUpMessage(user.getFullname());
+		String filename = "Laporan Pemeriksaan Medis " + child.getFullname() + "(" + Util.formatDate(record.getCheckUpDate()) + ").pdf";
+		mailService.sendEmail(user.getEmail(), mailTitleEditCheckUpRecord, message, filename, pdfAsByte);
+		
 	}
 	
 	@RequestMapping(value = "/getSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -309,8 +382,11 @@ public class RecordController extends BaseController {
 				
 				UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
 				if (userAdmin == null) {
+					
 					statusTrx = StatusCode.USER_NOT_FOUND;
+					
 				} else {
+					
 					switch ( req.getHeader().getCommand() ) { 
 					case "info-schedule-vaccine":
 						LOG.info("COMMAND : INFO-SCHEDULE-VACCINE");
@@ -330,10 +406,15 @@ public class RecordController extends BaseController {
 				
 				User user = userService.getUserByUsername( req.getHeader().getuName() );
 				if (user == null) {
+					
 					statusTrx = StatusCode.USER_NOT_FOUND;
+					
 				} if (!user.getStatus().equals("ACTIVE")) {
+					
 					statusTrx = StatusCode.USER_NOT_VALID;
+					
 				} else {
+					
 					switch ( req.getHeader().getCommand() ) { 
 					case "info-schedule-vaccine":
 						LOG.info("COMMAND : INFO-SCHEDULE-VACCINE");
@@ -346,8 +427,10 @@ public class RecordController extends BaseController {
 					default:
 						break; 
 					}
+					
 					user.setLastActivity(new Date());
 					userService.updateLastActivity(user);
+					
 				}
 				
 			}

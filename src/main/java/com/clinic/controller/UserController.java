@@ -35,7 +35,7 @@ import com.clinic.util.Util;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user") 
 public class UserController extends BaseController {
 	
 	private static final Logger LOG = LogManager.getLogger(UserController.class);
