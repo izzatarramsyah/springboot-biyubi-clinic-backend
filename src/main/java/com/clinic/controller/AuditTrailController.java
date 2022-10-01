@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.api.object.AuditTrailResponse;
 import com.clinic.api.object.HeaderResponse;
 import com.clinic.api.object.InfoRq;
 import com.clinic.api.request.APIRequest;
@@ -26,6 +27,7 @@ import com.clinic.constant.StatusCode;
 import com.clinic.entity.AuditTrail;
 import com.clinic.service.AuditTrailService;
 import com.clinic.service.UserAdminService;
+import com.clinic.util.Util;
 
 @CrossOrigin
 @RestController
@@ -47,8 +49,8 @@ public class AuditTrailController extends BaseController {
 		APIResponse < HashMap<String, Object> > response = new APIResponse < HashMap<String, Object> > ();
 		HashMap< String, Object > responseObj = new HashMap< String, Object > ();
 		StatusCode statusTrx = StatusCode.SUCCESS_PROCESS;
+		List < AuditTrailResponse > listAuditTrail = new ArrayList < AuditTrailResponse >();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		List < AuditTrail > listAuditTrail = new ArrayList < AuditTrail >();
 		Date startDate 	= null;
 		Date endDate 	= null;
 		
@@ -59,6 +61,8 @@ public class AuditTrailController extends BaseController {
 			
 			if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
 				
+				List < AuditTrail > auditTrail = new ArrayList < AuditTrail >();
+
 				try {
 					startDate = sdf.parse(req.getPayload().getStartDate() + " 00:00:00");
 				} catch (ParseException e) {
@@ -71,8 +75,16 @@ public class AuditTrailController extends BaseController {
 					LOG.error("ERR :: {} " +e);
 				}
 
-				listAuditTrail = auditTrailService.getAuditTrail(req.getPayload().getUsername(), startDate, endDate);
-				responseObj.put("object", listAuditTrail);
+				auditTrail = auditTrailService.getAuditTrail(req.getPayload().getUsername(), startDate, endDate);
+				List < AuditTrailResponse > result = new ArrayList < AuditTrailResponse >();
+				for (AuditTrail rs : auditTrail) {
+					AuditTrailResponse obj = new AuditTrailResponse();
+					obj.setUsername( rs.getValue1() );
+					obj.setActivity( rs.getActivity() );
+					obj.setDate( Util.formatDateWithTime(rs.getCreatedDtm()) );
+					result.add( obj );
+				}
+				responseObj.put("object", result);
 				response.setPayload(responseObj);
 				
 				userAdminService.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
