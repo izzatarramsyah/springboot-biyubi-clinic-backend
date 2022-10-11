@@ -21,11 +21,11 @@ public class AuditTrailDaoImpl implements AuditTrailDao{
 
 	private static final Logger LOG = LogManager.getLogger(CheckUpDaoImpl.class);
 
-	public static final String INSERT_AUDIT_TRAIL = "INSERT INTO TBL_AUDIT_TRAIL "+
+	public static final String INSERT_AUDIT_TRAIL = "INSERT INTO TBL_APP_LOGS "+
 			  " ( ACTIVITY, KEY, VALUE1, VALUE2, STATUS, CREATED_DTM, CREATED_BY ) "+
 			  " VALUES (?,?,?,?,?,?,?)";
 	
-	public static final String GET_AUDIT_TRAIL = "SELECT A.* FROM TBL_AUDIT_TRAIL A "
+	public static final String GET_AUDIT_TRAIL = "SELECT A.* FROM TBL_APP_LOGS A "
 			+ "WHERE A.VALUE1 = ? AND A.CREATED_DTM  between ? and ? ORDER BY A.CREATED_DTM ASC";
 	
 	@Autowired

@@ -12,6 +12,8 @@ public interface MasterService {
 	
 	VaccineMaster getMstVaccineByCode ( String code ) throws Exception;
 	
+	VaccineMaster getMstVaccineByName ( String name ) throws Exception;
+
 	boolean addVaccineMaster ( VaccineRequest vaccineRq ) throws Exception;
 
 	boolean updateVaccineMaster ( VaccineRequest vaccineRq ) throws Exception;
@@ -21,6 +23,8 @@ public interface MasterService {
 	List < CheckUpMaster > getListMstCheckUp () throws Exception;
 
 	CheckUpMaster getMstCheckUpByCode ( String code ) throws Exception;
+
+	CheckUpMaster getListMstCheckUpByBatch (int batch) throws Exception;
 
 	boolean addCheckUpMaster ( CheckUpMaster checkUpMaster ) throws Exception;
 	

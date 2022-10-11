@@ -17,7 +17,6 @@ public class CheckUpMasterMapper implements RowMapper<CheckUpMaster> {
 		result.setBatch(rs.getInt("BATCH"));
 		result.setNextCheckUpDays(rs.getInt("NEXT_CHECK_UP_DAYS"));
 		result.setStatus(rs.getString("STATUS"));
-		result.setBatch(rs.getInt("BATCH"));
 		result.setCreatedDtm(rs.getTimestamp("CREATED_DTM"));
 		result.setCreatedBy(rs.getString("CREATED_BY"));
 		result.setLastUpdDtm(rs.getTimestamp("LASTUPD_DTM"));

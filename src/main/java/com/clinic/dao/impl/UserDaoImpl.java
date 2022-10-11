@@ -48,6 +48,9 @@ public class UserDaoImpl implements UserDao {
 	
 	public static final String GET_CHILD_BY_ID = "SELECT  A.* FROM TBL_CHILD A "
 			+ " WHERE A.ID = ? ";
+
+	public static final String GET_CHILD_BY_FULLNAME = "SELECT  A.* FROM TBL_CHILD A "
+			+ " WHERE A.FULLNAME = ? ";
 	
 	public static final String UPDATE_LAST_ACTIVITY = "UPDATE TBL_USER "
 			+ "SET LAST_ACTIVITY = ? "
@@ -77,6 +80,12 @@ public class UserDaoImpl implements UserDao {
 			+ " LASTUPD_DTM = ?, "
 			+ " LASTUPD_BY = ? "
 			+ " WHERE ID = ? ";
+	
+	public static final String CHANGE_PASSWORD = "UPDATE TBL_USER "
+			+ " SET PASSWORD = ?, "
+			+ " LASTUPD_DTM = ?, "
+			+ " LASTUPD_BY = ? "
+			+ " WHERE USERNAME = ? ";
 	
 	@Autowired
 	@Qualifier(ApplicationConstant.BEAN_JDBC_CLINIC)
@@ -149,6 +158,21 @@ public class UserDaoImpl implements UserDao {
 		List < Child > result = new ArrayList < Child >();
 		try{
 			result = jdbcTemplate.query(GET_CHILD_BY_ID, new Object[] { id }, new ChildMapper());
+		}catch (Exception e){
+			LOG.error("ERR :: {}", e.getMessage()); 
+		}
+		LOG.debug("RESULT::{}", result);
+		LOG.traceExit();
+		return result.size() > 0 ? result.get(0) : new Child(); 
+	}
+	
+	@Override
+	public Child getChildByFullname(String fullname) throws Exception {
+		LOG.traceEntry();
+		LOG.debug("SQL::{}", GET_CHILD_BY_FULLNAME);
+		List < Child > result = new ArrayList < Child >();
+		try{
+			result = jdbcTemplate.query(GET_CHILD_BY_FULLNAME, new Object[] { fullname }, new ChildMapper());
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage()); 
 		}
@@ -279,6 +303,22 @@ public class UserDaoImpl implements UserDao {
 		try{
 			result = jdbcTemplate.update(CHANGE_STATUS_USER,
 					new Object[] { user.getStatus(), user.getUpdatedDtm(), user.getUpdatedBy(), user.getId() });
+		}catch (Exception e){
+			LOG.error("ERR :: {}", e.getMessage());
+		}
+		LOG.debug("RESULT::{}", result);
+		LOG.traceExit();
+		return result == 0 ? false : true;
+	}
+
+	@Override
+	public boolean changePassword(User user, String newPassword) throws Exception {
+		LOG.traceEntry();
+		LOG.debug("SQL::{}", CHANGE_PASSWORD);
+		int result = 0;
+		try{
+			result = jdbcTemplate.update(CHANGE_PASSWORD,
+					new Object[] { newPassword, user.getUpdatedDtm(), user.getUpdatedBy(), user.getUsername() });
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage());
 		}

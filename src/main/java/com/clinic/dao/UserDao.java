@@ -17,6 +17,8 @@ public interface UserDao {
 
 	Child getChildByID (int id) throws Exception;
 	
+	Child getChildByFullname (String fullname) throws Exception;
+
 	boolean insertUser (User user) throws Exception;
 	
 	int insertChild (Child child) throws Exception;
@@ -30,5 +32,7 @@ public interface UserDao {
 	boolean updateLastActivity(User user) throws Exception;
 	
 	List < User > getUser () throws Exception;
+
+	boolean changePassword (User user, String newPassword) throws Exception;
 
 }

@@ -12,7 +12,7 @@ public class CheckUpSchedule {
 	private int nextCheckUpDays;
 	private String scheduleDate;
 	private double weight;
-	private int length;
+	private double length;
 	private double headDiameter;
 	private String notes;
 	
@@ -70,10 +70,10 @@ public class CheckUpSchedule {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
-	public int getLength() {
+	public double getLength() {
 		return length;
 	}
-	public void setLength(int length) {
+	public void setLength(double length) {
 		this.length = length;
 	}
 	public double getHeadDiameter() {

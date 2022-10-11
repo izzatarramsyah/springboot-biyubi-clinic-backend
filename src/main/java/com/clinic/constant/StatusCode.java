@@ -15,6 +15,8 @@ public enum StatusCode {
 	USER_NOT_VALID("09","User is not active"),
 	USER_NOT_FOUND("10","User tidak ditemukan"),
 	CHILD_NOT_FOUND("11","Data anak tidak ditemukan"),
+	INVALID_CHANNEL("12","Invalid Channel"),
+	INVALID_USER("12","Username / Password tidak sesuai"),
 	GENERIC_ERROR("99","Sistem mengalami kesalahan. Silahkan hubungi administrator anda");
 	
 	private String code;

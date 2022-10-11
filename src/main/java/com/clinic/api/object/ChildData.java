@@ -18,33 +18,49 @@ public class ChildData {
 	private double weight;
 	private String weightCategory;
 	private String weightNotes;
-	private int length;
+	private double length;
 	private String lengthCategory;
 	private String lengthNotes;
 	private double headDiameter;
 	private String headDiameterCategory;
 	private String headDiameterNotes;
 	private List < Double > seriesWeight;
-	private List < Integer > seriesLength;
+	private List < Double > seriesLength;
 	private List < Double > seriesHeadDiameter;
 	
 	public ChildData () { }
 	
-	public ChildData setAttribute (Child child) {
-		this.id = child.getId();
-		this.fullname = child.getFullname();
-		if (!Objects.isNull( child.getBirthDate() )) {
-			this.birthDate = Util.formatDate( child.getBirthDate() );
+	public ChildData setAttribute ( int id, String fullname, Date birthDate, String gender,
+			double weight, String weightCategory, String weightNotes, 
+				double length, String lengthCategory, String lengthNotes, 
+					double headDiameter, String headDiameterCategory, String headDiameterNotes, 
+					List < Double > seriesWeight, List < Double > seriesLength, List < Double > seriesHeadDiameter ) {
+		this.id = id;
+		this.fullname = fullname;
+		if (!Objects.isNull( birthDate )) {
+			this.birthDate = Util.formatDate( birthDate );
 		}
-		if (child.getGender().equals("P")) {
+		if (gender.equals("P")) {
 			this.gender = "Perempuan";
 		} else {
 			this.gender = "Laki - Laki";
 		}
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-		String currentDate = formatDate.format(new Date());
-		String birthDate = formatDate.format(child.getBirthDate());
-		this.age = Util.calculateMonth(birthDate, currentDate);
+		String currentDt = formatDate.format(new Date());
+		String birthDt = formatDate.format(birthDate);
+		this.age = Util.calculateMonth(birthDt, currentDt);
+		this.weight = weight;
+		this.weightCategory = weightCategory;
+		this.weightNotes = weightNotes;
+		this.length = length;
+		this.lengthCategory = lengthCategory;
+		this.lengthNotes = lengthNotes;
+		this.headDiameter = headDiameter;
+		this.headDiameterCategory = headDiameterCategory;
+		this.headDiameterNotes = headDiameterNotes;
+		this.seriesWeight = seriesWeight;
+		this.seriesLength = seriesLength;
+		this.seriesHeadDiameter = seriesHeadDiameter;
 		return this;
 	}
 	
@@ -144,11 +160,11 @@ public class ChildData {
 		this.seriesWeight = seriesWeight;
 	}
 
-	public List<Integer> getSeriesLength() {
+	public List<Double> getSeriesLength() {
 		return seriesLength;
 	}
 
-	public void setSeriesLength(List<Integer> seriesLength) {
+	public void setSeriesLength(List<Double> seriesLength) {
 		this.seriesLength = seriesLength;
 	}
 
@@ -168,11 +184,11 @@ public class ChildData {
 		this.weight = weight;
 	}
 
-	public int getLength() {
+	public double getLength() {
 		return length;
 	}
 
-	public void setLength(int length) {
+	public void setLength(double length) {
 		this.length = length;
 	}
 

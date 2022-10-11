@@ -2,6 +2,8 @@ package com.clinic.service;
 
 import java.util.List;
 
+import com.clinic.api.object.ChildData;
+import com.clinic.api.object.UserData;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
 
@@ -14,6 +16,8 @@ public interface UserService {
 	User getUserByFullname(String fullname) throws Exception;
 	
 	Child getChildByID (int id) throws Exception;
+
+	Child getChildByFullname (String fullname) throws Exception;
 
 	List < Child > getChildByUserID (int id) throws Exception;
 	
@@ -32,5 +36,9 @@ public interface UserService {
 	boolean updateLastActivity(User user) throws Exception;
 	
 	List < User > getUser() throws Exception;
+
+	ChildData getChildDetails(User user, Child child) throws Exception;
+	
+	boolean changePassword (User user, String newPassword) throws Exception;
 
 }

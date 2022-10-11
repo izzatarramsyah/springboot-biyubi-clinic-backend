@@ -18,7 +18,7 @@ public interface MasterDao {
 	
 	CheckUpMaster getMstCheckUpByCode ( String code ) throws Exception;
 
-	CheckUpMaster getListMstCheckUpByBatch (int batch, String code) throws Exception;
+	CheckUpMaster getListMstCheckUpByBatch (int batch ) throws Exception;
 
 	VaccineMaster getMstVaccineByName ( String name ) throws Exception;
 	

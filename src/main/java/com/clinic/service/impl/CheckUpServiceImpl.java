@@ -37,7 +37,7 @@ public class CheckUpServiceImpl implements CheckUpService{
 	@Override
 	public boolean addCheckUpRecord(CheckUpRequest param) throws Exception {
 		boolean result = false;
-		CheckUpMaster checkUpMaster = masterDao.getListMstCheckUpByBatch(param.getBatch(), param.getMstCode());
+		CheckUpMaster checkUpMaster = masterDao.getMstCheckUpByCode(param.getMstCode());
 		CheckUpRecord record = new CheckUpRecord();
 		record.setUserId( param.getUserId() );
 		record.setChildId( param.getChildId() );

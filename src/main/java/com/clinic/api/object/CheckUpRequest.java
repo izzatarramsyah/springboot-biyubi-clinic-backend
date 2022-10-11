@@ -7,11 +7,11 @@ public class CheckUpRequest {
 	private int userId;
 	private int childId;
 	private String fullname;
-	private Date birthDate;
+	private Date birthDate; 
 	private String gender;
 	private String mstCode;
 	private double weight;
-	private int length;
+	private double length;
 	private double headDiameter;
 	private int batch;
 	private String notes;
@@ -71,10 +71,10 @@ public class CheckUpRequest {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
-	public int getLength() {
+	public double getLength() {
 		return length;
 	}
-	public void setLength(int length) {
+	public void setLength(double length) {
 		this.length = length;
 	}
 	public double getHeadDiameter() {

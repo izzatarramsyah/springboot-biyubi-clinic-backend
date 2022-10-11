@@ -22,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.api.object.CheckUpSchedule;
+import com.clinic.api.object.HeaderResponse;
 import com.clinic.api.object.InfoRq;
 import com.clinic.api.object.VaccineSchedule;
 import com.clinic.api.request.APIRequest;
+import com.clinic.api.response.APIResponse;
 import com.clinic.constant.Constant;
+import com.clinic.constant.StatusCode;
 import com.clinic.entity.AuditTrail;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
@@ -72,146 +75,92 @@ public class ExportReportController extends BaseController {
 	AuditTrailService auditTrailService;
 	
 	@RequestMapping(value = "/excel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public byte[] excel(HttpServletResponse response, @RequestBody String input) {
-		
+	public byte[] excel(@RequestBody String input) {
 		LOG.traceEntry();
 		byte[] excelAsByte = null;
-		
 		try{
-			
 			LOG.info("EXPORT EXCEL");
 			APIRequest < InfoRq > req = getInfoRq( input );
 			UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
-			
 			if (userAdmin != null) {
-				
 				switch ( req.getHeader().getCommand() ) { 
-				case "schedule-checkup":
-					
-					LOG.info("COMMAND : SCHEDULE-CHECKUP");
-					
+				case Constant.SCHEDULE_CHECKUP:
 					List < CheckUpSchedule > checkUpSchedule = checkUpService.getSchedule( req.getPayload().getUserId(), req.getPayload().getChildId());
 					excelAsByte = ExportExcel.checkUp(checkUpSchedule, userService.getChildByID( req.getPayload().getChildId() ) );
-					
 					break;
-				
-				case "schedule-vaccine":
-					
-					LOG.info("COMMAND : SCHEDULE-VACCINE");
-					
+				case Constant.SCHEDULE_VACCINE:
 					List < VaccineSchedule > vaccineSchedule = vaccineService.getSchedule( req.getPayload().getUserId(), req.getPayload().getChildId());
 					excelAsByte = ExportExcel.vaccine(vaccineSchedule, userService.getChildByID( req.getPayload().getChildId() ));
-					
 					break;
-				
-				case "mst-vaccine":
-					
-					LOG.info("COMMAND : MST-VACCINE");
-					
+				case Constant.INFO_LIST_VACCINE:
 					List < VaccineMaster > listVaccineMst = masterService.getListMstVaccine();
 					excelAsByte = ExportExcel.vaccineMst(listVaccineMst);
-					
 					break;
-				
-				case "mst-checkup":
-					
-					LOG.info("COMMAND : MST-CHECKUP");
-					
+				case Constant.INFO_LIST_CHECKUP:
 					List < CheckUpMaster > listCheckUpMst = masterService.getListMstCheckUp();
 					excelAsByte = ExportExcel.checkUpMst(listCheckUpMst);
-					
 					break;
-				
-				case "list-user":
-					
-					LOG.info("COMMAND : LIST-USER");
-					
+				case Constant.INFO_LIST_USER:
 					List < User > listUser = userService.getUser();
 					for (User usr : listUser) {
 						List < Child > child = userService.getChildByUserID(usr.getId());
 						usr.setChild(child);
 					}
-					
 					excelAsByte = ExportExcel.listUser(listUser);
-					
 					break;
-				
-				case "list-audit-trail":
-					
-					LOG.info("COMMAND : AUDIT-TRAIL");
-					
+				case Constant.INFO_LOGS:
 					List < AuditTrail > listAuditTrail = new ArrayList < AuditTrail > ();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date startDate = null; Date endDate = null;
-					
 					try {
 						startDate = sdf.parse(req.getPayload().getStartDate() + " 00:00:00");
 					} catch (ParseException e) {
 						LOG.error("ERR :: {} " +e);
 					}
-					
 					try {
 						endDate = sdf.parse(req.getPayload().getEndDate() + " 23:59:59");
 					} catch (ParseException e) {
 						LOG.error("ERR :: {} " +e);
 					}
-					
 					listAuditTrail = auditTrailService.getAuditTrail(req.getPayload().getUsername(), startDate, endDate);
-					LOG.info(listAuditTrail.size() + " " + Util.formatDate(startDate) + " " + Util.formatDate(endDate));
 					excelAsByte = ExportExcel.auditTrail(listAuditTrail, Util.formatDate(startDate), Util.formatDate(endDate));
-					
 					break;
-				
 				default:
 					break;
 				}
-				
 			}
-			
 		}catch (Exception e){
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 		}
-		
 		LOG.traceExit();
 		return excelAsByte;
 		
 	}
 	
 	@RequestMapping(value = "/pdf", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public byte[] pdf(HttpServletResponse response, @RequestBody String input) {
-		
+	public byte[] pdf(@RequestBody String input) {
 		LOG.traceEntry();
 		byte[] pdfAsByte = null;
-		
 		try {
-			
 			LOG.info("EXPORT PDF");
 			APIRequest < InfoRq > req = getInfoRq( input );
 			SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 			Map<String, Object> object = new HashMap<String, Object>();
-
 			UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
 			if (userAdmin != null) {
-				
 				User user = userService.getUserByID( req.getPayload().getUserId() );
 				if ( user != null ) {
-					
 					Child child = userService.getChildByID( req.getPayload().getChildId() );
 					if ( child != null) {
-						
 						switch ( req.getHeader().getCommand() ) { 
-						case "report-checkup":
-							LOG.info("COMMAND : REPORT-CHECKUP");
-					
+						case Constant.SCHEDULE_CHECKUP:
 							CheckUpRecord record = checkUpService.getCheckUpRecord( user.getId(), child.getId(), req.getPayload().getMstCode() );
 							GrowthDtl growth = checkUpService.getGrowthDtl( req.getPayload().getMstCode(), record.getId());
 							CheckUpMaster cm = masterService.getMstCheckUpByCode( req.getPayload().getMstCode() );
-							
 							String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
 							String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
 							String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
-							
 							object.put("parentName", user.getFullname());
 							object.put("address", user.getAddress());
 							object.put("childName", child.getFullname());
@@ -225,15 +174,11 @@ public class ExportReportController extends BaseController {
 							object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
 							object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));
 							pdfAsByte = ExportPDF.download(object, "report/template_checkup.jrxml");
-							
 							break;
-						
-						case "report-vaccine":
+						case Constant.SCHEDULE_VACCINE:
 							LOG.info("COMMAND : REPORT-VACCINE");
-							
 							VaccineRecord recordd = vaccineService.getVaccineRecord( user.getId(), child.getId(), req.getPayload().getBatch(), req.getPayload().getMstCode() );
 							VaccineMaster vm = masterService.getMstVaccineByCode( req.getPayload().getMstCode() );
-							
 							object.put("parentName", user.getFullname());
 							object.put("address", user.getAddress());
 							object.put("childName", child.getFullname());
@@ -249,27 +194,19 @@ public class ExportReportController extends BaseController {
 							object.put("batch", String.valueOf(recordd.getBatch()));
 							object.put("vaccineNotes", recordd.getNotes());
 							pdfAsByte = ExportPDF.download(object, "report/template_vaccine.jrxml");
-							
 							break;
-						
 						default:
 							break;
 						}
-						
 					}
-					
 				}
-				
 			}
-			
 		}catch (Exception e){
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 		}
-		
 		LOG.traceExit();
 		return pdfAsByte;
-		
 	}
 	
 }

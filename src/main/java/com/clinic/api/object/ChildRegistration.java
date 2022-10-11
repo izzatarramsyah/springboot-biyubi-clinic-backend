@@ -10,9 +10,9 @@ public class ChildRegistration {
 	private Date birthDate;
 	private String gender;
 	private String notes;
-	private int weight;
-	private int length;
-	private int headDiameter;
+	private double weight;
+	private double length;
+	private double headDiameter;
 	
 	public int getId() {
 		return id;
@@ -50,22 +50,22 @@ public class ChildRegistration {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
-	public void setWeight(int weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
-	public int getLength() {
+	public double getLength() {
 		return length;
 	}
-	public void setLength(int length) {
+	public void setLength(double length) {
 		this.length = length;
 	}
-	public int getHeadDiameter() {
+	public double getHeadDiameter() {
 		return headDiameter;
 	}
-	public void setHeadDiameter(int headDiameter) {
+	public void setHeadDiameter(double headDiameter) {
 		this.headDiameter = headDiameter;
 	}
 	

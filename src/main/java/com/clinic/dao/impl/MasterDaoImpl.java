@@ -29,19 +29,17 @@ public class MasterDaoImpl implements MasterDao{
 
 	public static final String GET_LIST_MST_VACCINE = "SELECT A.* FROM TBL_VACCINE_MASTER A ORDER BY A.VACCINE_CODE ASC";
 
-	public static final String GET_LIST_MST_CHECK_UP_ = "SELECT A.* FROM TBL_CHECK_UP_MASTER A ORDER BY A.BATCH ASC ";
+	public static final String GET_LIST_MST_CHECK_UP = "SELECT A.* FROM TBL_CHECK_UP_MASTER A ORDER BY A.BATCH ASC ";
 
 	public static final String GET_LIST_MST_DTL_VACCINE = "SELECT A.* FROM TBL_VACCINE_MASTER_DTL A "
 			+ "WHERE A.VACCINE_CODE = ?"
 			+ "ORDER BY A.BATCH ASC ";
 	
-	public static final String GET_CHECK_UP_MASTER = "SELECT A.*  "
-			+ " FROM TBL_CHECK_UP_MASTER A "
-			+ " WHERE A.CODE = ? ";
-	
-	public static final String GET_LIST_MST_CHECK_UP_BY_BATCH_CODE = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.BATCH = ? AND A.CODE = ? ";
+	public static final String GET_MST_CHECK_UP_BY_CODE = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.CODE = ?";
 
-	public static final String GET_LIST_MST_VACCINE_BY_NAME = "SELECT A.* FROM TBL_VACCINE_MASTER A WHERE A.VACCINE_NAME = ? AND A.STATUS = 'ACTIVE' ";
+	public static final String GET_MST_CHECK_UP_BY_BATCH = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.BATCH = ?";
+
+	public static final String GET_MST_VACCINE_BY_NAME = "SELECT A.* FROM TBL_VACCINE_MASTER A WHERE A.VACCINE_NAME = ? AND A.STATUS = 'ACTIVE' ";
 
 	public static final String COUNT_MST_VACCINE = "SELECT COUNT(*) FROM TBL_VACCINE_MASTER ";
 
@@ -142,10 +140,10 @@ public class MasterDaoImpl implements MasterDao{
 	@Override
 	public List<CheckUpMaster> getListMstCheckUp() throws Exception {
 		LOG.traceEntry();
-		LOG.debug("SQL::{}", GET_LIST_MST_CHECK_UP_);
+		LOG.debug("SQL::{}", GET_LIST_MST_CHECK_UP);
 		List < CheckUpMaster > result = new ArrayList <CheckUpMaster>();
 		try{
-			result = jdbcTemplate.query(GET_LIST_MST_CHECK_UP_, new Object[] { }, new CheckUpMasterMapper());
+			result = jdbcTemplate.query(GET_LIST_MST_CHECK_UP, new Object[] { }, new CheckUpMasterMapper());
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage()); 
 		}
@@ -157,10 +155,10 @@ public class MasterDaoImpl implements MasterDao{
 	@Override
 	public CheckUpMaster getMstCheckUpByCode(String code) throws Exception {
 		LOG.traceEntry();
-		LOG.debug("SQL::{}", GET_CHECK_UP_MASTER);
+		LOG.debug("SQL::{}", GET_MST_CHECK_UP_BY_CODE);
 		List < CheckUpMaster > result = new ArrayList <CheckUpMaster>();
 		try{
-			result = jdbcTemplate.query(GET_CHECK_UP_MASTER, new Object[] { code }, new CheckUpMasterMapper());
+			result = jdbcTemplate.query(GET_MST_CHECK_UP_BY_CODE, new Object[] { code }, new CheckUpMasterMapper());
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage()); 
 		}
@@ -171,12 +169,12 @@ public class MasterDaoImpl implements MasterDao{
 	}
 
 	@Override
-	public CheckUpMaster getListMstCheckUpByBatch(int batch, String code) throws Exception {
+	public CheckUpMaster getListMstCheckUpByBatch(int batch) throws Exception {
 		LOG.traceEntry();
-		LOG.debug("SQL::{}", GET_LIST_MST_CHECK_UP_BY_BATCH_CODE);
+		LOG.debug("SQL::{}", GET_MST_CHECK_UP_BY_BATCH);
 		List < CheckUpMaster > result = new ArrayList <CheckUpMaster>();
 		try{
-			result = jdbcTemplate.query(GET_LIST_MST_CHECK_UP_BY_BATCH_CODE, new Object[] { batch, code }, new CheckUpMasterMapper());
+			result = jdbcTemplate.query(GET_MST_CHECK_UP_BY_BATCH, new Object[] { batch }, new CheckUpMasterMapper());
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage()); 
 		}
@@ -184,14 +182,14 @@ public class MasterDaoImpl implements MasterDao{
 		LOG.traceExit();
 		return result.size() == 0 ? null : result.get(0);
 	}
-
+	
 	@Override
 	public VaccineMaster getMstVaccineByName(String code) throws Exception {
 		LOG.traceEntry();
-		LOG.debug("SQL::{}", GET_LIST_MST_VACCINE_BY_NAME);
+		LOG.debug("SQL::{}", GET_MST_VACCINE_BY_NAME);
 		List < VaccineMaster > result = new ArrayList <VaccineMaster>();
 		try{
-			result = jdbcTemplate.query(GET_LIST_MST_VACCINE_BY_NAME, new Object[] { code }, new VaccineMasterMapper());
+			result = jdbcTemplate.query(GET_MST_VACCINE_BY_NAME, new Object[] { code }, new VaccineMasterMapper());
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage()); 
 		}

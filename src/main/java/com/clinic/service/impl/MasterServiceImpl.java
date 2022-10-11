@@ -168,4 +168,14 @@ public class MasterServiceImpl implements MasterService{
 		return category;
 	}
 
+	@Override 
+	public VaccineMaster getMstVaccineByName(String name) throws Exception {
+		return mstDao.getMstVaccineByName(name);
+	}
+
+	@Override
+	public CheckUpMaster getListMstCheckUpByBatch(int batch) throws Exception {
+		return mstDao.getListMstCheckUpByBatch(batch);
+	}
+
 }
