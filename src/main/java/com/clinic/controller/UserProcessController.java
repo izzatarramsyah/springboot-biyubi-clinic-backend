@@ -84,23 +84,30 @@ public class UserProcessController extends BaseController {
 				} else { 
 					switch ( req.getHeader().getCommand() ) { 
 					  case Constant.INFO_USER:
-						  User user = userService.getUserByID(req.getPayload().getUserId());
-						  if (user == null) {
-							  statusTrx = StatusCode.USER_NOT_FOUND;
-						  } else {
-							  List < ChildData > listChildData = new ArrayList < ChildData >();
-							  UserData userData = new UserData().setAttribute(user);
-							  if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
+						  if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
+							  User user = userService.getUserByID( req.getPayload().getUserId() );
+							  if ( user == null ) {
+								  statusTrx = StatusCode.USER_NOT_FOUND;
+							  } else {
+								  UserData userData = new UserData().setAttribute(user);
 								  Child child = userService.getChildByID( req.getPayload().getChildId() ); 
 								  if ( child == null ) {
 									  statusTrx = StatusCode.CHILD_NOT_FOUND;
 								  } else { 
+									  List < ChildData > listChildData = new ArrayList < ChildData >();
 									  ChildData childData = userService.getChildDetails(user, child);
 									  listChildData.add(childData);
 								      userData.setChildData(listChildData);
 								      responseObj.put("object", userData);
 								  }
-							  } else if (req.getHeader().getChannel().equals( Constant.CHANNEL_MOBILE )){
+							  }
+						  } else if (req.getHeader().getChannel().equals( Constant.CHANNEL_MOBILE )){
+							  User user = userService.getUserByUsername( req.getPayload().getUsername() );
+							  if (user == null) {
+								  statusTrx = StatusCode.USER_NOT_FOUND;
+							  } else {
+								  UserData userData = new UserData().setAttribute(user);
+								  List < ChildData > listChildData = new ArrayList < ChildData >();
 								  for (Child child : userService.getChildByUserID( user.getId() )) {
 									  ChildData childData = userService.getChildDetails(user, child);
 									  listChildData.add(childData);

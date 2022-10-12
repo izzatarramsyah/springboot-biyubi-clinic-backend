@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.api.object.ChildData;
 import com.clinic.api.object.HeaderResponse;
+import com.clinic.api.object.MessageRq;
 import com.clinic.api.object.UserData;
 import com.clinic.api.request.APIRequest;
 import com.clinic.api.response.APIResponse;
@@ -31,7 +32,9 @@ import com.clinic.entity.User;
 import com.clinic.service.CheckUpService;
 import com.clinic.service.MailService;
 import com.clinic.service.MasterService;
+import com.clinic.service.RestService;
 import com.clinic.service.UserService;
+import com.clinic.util.Security;
 import com.clinic.util.Util;
 import com.clinic.api.object.ChangePasswordRequest;
 
@@ -55,6 +58,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	MasterService masterService;
+	
+	@Autowired
+	RestService restService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public APIResponse<?> login(@RequestBody String input) {
@@ -108,6 +114,10 @@ public class UserController extends BaseController {
 						boolean isChanged = userService.changePassword(user, req.getPayload().getNewPassword());
 						if (!isChanged){
 							statusTrx = StatusCode.FAILED_PROCESS;
+						} else {
+							String password = Security.decrypt( user.getPassword() );
+							String message = "Halo, " + user.getFullname() + " password Biyubi App terbaru anda adalah " + password;
+							restService.post( new MessageRq( user.getPhone_no(), message ) );
 						}
 					}
 				}

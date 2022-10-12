@@ -102,21 +102,16 @@ public class UploadDataController extends BaseController {
 												count++;
 												String value2 = Constant.VALUE_INSERT_USER.replaceAll("<fullname>", data.getNama_Orang_Tua()).replaceAll("<joinDate>", Util.formatDate(new Date()));
 												//auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_REGISTRATION, req.getHeader().getuName(), value2) );
-											}  else {
-												statusTrx = StatusCode.FAILED_PROCESS;
-											}
-										} else {
-											errorMessage.add(StatusCode.ALREDY_REGISTERD.getStatusDesc());
-										}
+											}  
+										} 
 									}
 								 } else {
-									 errorMessage.add( "Format Excel Tidak Sesuai" );
+									  errorMessage.add( "Data tibak boleh ada yang kosong" );
 									 break;
 								 }
 							}
 						  break;
 					  case Constant.CHILD_REGISTARTION:
-						  LOG.info("CHILD REGISTRATION");
 						  for (UploadData data : uploadData) {
 							  boolean isNotValidRow = isNotValidRow(data, Constant.CHILD_REGISTARTION);
 							  if (!isNotValidRow) {
@@ -149,15 +144,11 @@ public class UploadDataController extends BaseController {
 											  String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", data.getNama_Anak() ).replaceAll("<weight>", String.valueOf(data.getBerat_Badan()))
 										    		  .replaceAll("<length>", String.valueOf( data.getPanjang_Badan() )).replaceAll("<headDiameter>", String.valueOf( data.getLingkar_Kepala() ));
 											  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHILD_REGISTRATION, req.getHeader().getuName(), value2 ) );
-										  } else {
-											  errorMessage.add( StatusCode.FAILED_PROCESS.getStatusDesc() );
-										  }
-									  } else {
-										  errorMessage.add( StatusCode.FAILED_PROCESS.getStatusDesc() );
-									  }
+										  } 
+									  } 
 								  }
 							  } else {
-								  errorMessage.add( "Format Excel Tidak Sesuai" );
+								  errorMessage.add( "Data tibak boleh ada yang kosong" );
 								  break;
 							  }
 						  }
@@ -166,7 +157,7 @@ public class UploadDataController extends BaseController {
 						  for (UploadData data : uploadData) {
 							  boolean isNotValidRow = isNotValidRow(data, Constant.VACCINE_RECORD);
 							  if (!isNotValidRow) {
-								  String message = validateCheckupRecord( data );
+								  String message = validateVaccineRecord( data );
 								  if (!message.equals( Strings.EMPTY )) {
 									  errorMessage.add( message );
 								  } else {
@@ -187,13 +178,11 @@ public class UploadDataController extends BaseController {
 											  String value2 = Constant.VALUE_RECORD_VACCINE.replaceAll("<childName>", child.getFullname()).replaceAll("<vaccineName>", vm.getVaccineName())
 													  .replaceAll("<batch>", String.valueOf(data.getBulan())).replaceAll("<notes>", data.getCatatan());
 											  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_VACCINE_RECORD, req.getHeader().getuName(), value2) );
-										  } else {
-											  errorMessage.add( StatusCode.FAILED_PROCESS.getStatusDesc() );
-										  }
+										  } 
 									  }
 								  }
 							  } else {
-								  errorMessage.add( "Format Excel Tidak Sesuai" );
+								  errorMessage.add( "Data tibak boleh ada yang kosong" );
 								  break;
 							  }
 						  }
@@ -202,7 +191,7 @@ public class UploadDataController extends BaseController {
 						  for (UploadData data : uploadData) {
 							  boolean isNotValidRow = isNotValidRow(data, Constant.CHECKUP_RECORD);
 							  if (!isNotValidRow) {
-								  String message = validateVaccineRecord( data );
+								  String message = validateCheckupRecord( data );
 								  if (!message.equals( Strings.EMPTY )) {
 									  errorMessage.add( message );
 								  } else {
@@ -226,13 +215,11 @@ public class UploadDataController extends BaseController {
 											  String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(data.getBerat_Badan()))
 										    		  .replaceAll("<length>", String.valueOf(data.getPanjang_Badan())).replaceAll("<headDiameter>", String.valueOf(data.getLingkar_Kepala()));
 											  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_CHECK_UP_RECORD, req.getHeader().getuName(), value2 ) );
-										  } else {
-											  errorMessage.add( StatusCode.FAILED_PROCESS.getStatusDesc() );
-										  }
+										  } 
 									  }
 								  }
 							  } else {
-								  errorMessage.add( "Format Excel Tidak Sesuai" );
+								  errorMessage.add( "Data tibak boleh ada yang kosong" );
 								  break;
 							  }
 						  }
@@ -241,6 +228,7 @@ public class UploadDataController extends BaseController {
 						  break;
 					}
 					if ( errorMessage.size() > 0 ) {
+						statusTrx = StatusCode.FAILED_PROCESS;
 						responseObject.put("message", errorMessage);
 					} else {
 						List < String > message = new ArrayList < String >();
