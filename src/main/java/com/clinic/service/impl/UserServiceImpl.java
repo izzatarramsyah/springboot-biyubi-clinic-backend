@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinic.api.object.ChildData;
-import com.clinic.api.object.UserData;
+import com.clinic.api.object.InfoChildID;
+import com.clinic.api.object.InfoUserID;
 import com.clinic.constant.Constant;
-import com.clinic.controller.UserController;
-import com.clinic.dao.MasterDao;
 import com.clinic.dao.UserDao;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
@@ -38,6 +35,32 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	CheckUpService checkUpService;
 	
+	@Override
+	public List < User > getListUser() throws Exception {
+		List < User > listUser = userDao.getUser();
+		for (User usr : listUser) {
+			List < Child > child = userDao.getChildByUserID(usr.getId());
+			usr.setChild(child);
+		}
+		return listUser;
+	}
+
+	@Override
+	public List < InfoUserID > getListIDUser() throws Exception {
+		List < InfoUserID > listUser = new ArrayList < InfoUserID >();
+		for (User user : userDao.getUser()) {
+			List < InfoChildID > listChild = new ArrayList < InfoChildID >(); 
+			for (Child child : userDao.getChildByUserID( user.getId() )){
+				InfoChildID temp = new InfoChildID();
+				temp.setId( child.getId() );
+				temp.setFullname( child.getFullname() );
+				listChild.add( temp );
+			}
+			listUser.add( new InfoUserID( user.getId(), user.getFullname(), listChild) );
+		}
+		return listUser;
+	}
+
 	@Override
 	public User getUserByID (int id) throws Exception {
 		return userDao.getUserByID(id);
@@ -186,5 +209,7 @@ public class UserServiceImpl implements UserService{
 		String encPassword = Security.encrypt( newPassword );
 		return userDao.changePassword(user, encPassword);
 	}
+
+	
 
 }

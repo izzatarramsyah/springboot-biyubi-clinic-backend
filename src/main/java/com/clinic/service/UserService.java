@@ -3,11 +3,15 @@ package com.clinic.service;
 import java.util.List;
 
 import com.clinic.api.object.ChildData;
-import com.clinic.api.object.UserData;
+import com.clinic.api.object.InfoUserID;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
 
 public interface UserService {
+
+	List < User > getListUser() throws Exception;
+
+	List < InfoUserID > getListIDUser() throws Exception;
 
 	User getUserByID (int id) throws Exception;
 

@@ -2,12 +2,20 @@ package com.clinic.api.object;
 
 import java.util.List;
 
-public class InfoUser {
+public class InfoUserID {
 	
 	private int id;
 	private String fullname;
-	private List < InfoChild > listChild;
-	
+	private List < InfoChildID > listChild;
+
+	public InfoUserID (){}
+
+	public InfoUserID (int id, String fullname, List < InfoChildID > listChild){ 
+		this.id = id;
+		this.fullname = fullname;
+		this.listChild = listChild;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -20,11 +28,11 @@ public class InfoUser {
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
-	public List<InfoChild> getListChild() {
+	public List<InfoChildID> getListChild() {
 		return listChild;
 	}
-	public void setListChild(List<InfoChild> listChild) {
+	public void setListChild(List<InfoChildID> listChild) {
 		this.listChild = listChild;
-	}	
+	}
 
 }

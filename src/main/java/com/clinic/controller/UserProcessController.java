@@ -19,9 +19,8 @@ import com.clinic.api.object.CheckUpRequest;
 import com.clinic.api.object.ChildData;
 import com.clinic.api.object.ChildRegistration;
 import com.clinic.api.object.HeaderResponse;
-import com.clinic.api.object.InfoChild;
 import com.clinic.api.object.InfoRq;
-import com.clinic.api.object.InfoUser;
+import com.clinic.api.object.InfoUserID;
 import com.clinic.api.object.UserData;
 import com.clinic.api.request.APIRequest;
 import com.clinic.api.response.APIResponse;
@@ -77,77 +76,61 @@ public class UserProcessController extends BaseController {
 		try {
 			LOG.info("GET USER");
 			APIRequest < InfoRq > req = getInfoRq(input);
-			if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB ) || req.getHeader().getChannel().equals( Constant.CHANNEL_MOBILE )) {
-				UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
-				if (userAdmin == null) {
-					statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
-				} else { 
-					switch ( req.getHeader().getCommand() ) { 
-					  case Constant.INFO_USER:
-						  if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
-							  User user = userService.getUserByID( req.getPayload().getUserId() );
-							  if ( user == null ) {
-								  statusTrx = StatusCode.USER_NOT_FOUND;
-							  } else {
-								  UserData userData = new UserData().setAttribute(user);
-								  Child child = userService.getChildByID( req.getPayload().getChildId() ); 
-								  if ( child == null ) {
-									  statusTrx = StatusCode.CHILD_NOT_FOUND;
-								  } else { 
-									  List < ChildData > listChildData = new ArrayList < ChildData >();
-									  ChildData childData = userService.getChildDetails(user, child);
-									  listChildData.add(childData);
-								      userData.setChildData(listChildData);
-								      responseObj.put("object", userData);
-								  }
-							  }
-						  } else if (req.getHeader().getChannel().equals( Constant.CHANNEL_MOBILE )){
-							  User user = userService.getUserByUsername( req.getPayload().getUsername() );
-							  if (user == null) {
-								  statusTrx = StatusCode.USER_NOT_FOUND;
-							  } else {
-								  UserData userData = new UserData().setAttribute(user);
-								  List < ChildData > listChildData = new ArrayList < ChildData >();
-								  for (Child child : userService.getChildByUserID( user.getId() )) {
-									  ChildData childData = userService.getChildDetails(user, child);
-									  listChildData.add(childData);
-								  }
-							      userData.setChildData(listChildData);
-							      responseObj.put("object", userData);
-							  }
-						  }
-						  break;
-					  case Constant.INFO_ALL_USER:
-						  List < User > listUser = userService.getUser();
-						  for (User usr : listUser) {
-							  List < Child > child = userService.getChildByUserID(usr.getId());
-							  usr.setChild(child);
-						  }
-						  responseObj.put("object", listUser);
-						  break;
-					  case Constant.INFO_SIMPLE_USER:
-						  List < InfoUser > infoUser = new ArrayList < InfoUser > ();
-						  for (User usr : userService.getUser()) {
-							  InfoUser info = new InfoUser();
-							  info.setId( usr.getId() );
-							  info.setFullname( usr.getFullname() );
-							  List < InfoChild > infoChild = new ArrayList < InfoChild > (); 
-							  for (Child chd : userService.getChildByUserID(usr.getId()) ) {
-								  InfoChild infoo = new InfoChild();
-								  infoo.setId( chd.getId() );
-								  infoo.setFullname( chd.getFullname() );
-								  infoChild.add( infoo );
-							  }
-							  info.setListChild(infoChild);
-							  infoUser.add(info);
-						  }
-						  responseObj.put("object", infoUser);
-						  break;
-					  default:
-						  break;
-					}
-					userAdminService.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
+			switch ( req.getHeader().getCommand() ) { 			
+				case Constant.INFO_USER:
+				if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
+					UserAdmin userAdmin = userAdminService.getAdminByUsername( req.getHeader().getuName() );
+					if (userAdmin == null) {
+						statusTrx = StatusCode.USER_ADMIN_NOT_FOUND;
+					} else {
+						User user = userService.getUserByID( req.getPayload().getUserId() );
+						if ( user == null ) {
+							statusTrx = StatusCode.USER_NOT_FOUND;
+						} else {
+							UserData userData = new UserData().setAttribute(user);
+							Child child = userService.getChildByID( req.getPayload().getChildId() ); 
+							if ( child == null ) {
+								statusTrx = StatusCode.CHILD_NOT_FOUND;
+							} else { 
+								List < ChildData > listChildData = new ArrayList < ChildData >();
+								ChildData childData = userService.getChildDetails(user, child);
+								listChildData.add(childData);
+								userData.setChildData(listChildData);
+								responseObj.put("object", userData);
+							}
+						}
+					} 
+				} else if (req.getHeader().getChannel().equals( Constant.CHANNEL_MOBILE )) {
+					User user = userService.getUserByUsername( req.getPayload().getUsername() );
+					if (user == null) {
+						statusTrx = StatusCode.USER_NOT_FOUND;
+					} else {
+						UserData userData = new UserData().setAttribute(user);
+						List < ChildData > listChildData = new ArrayList < ChildData >();
+						for (Child child : userService.getChildByUserID( user.getId() )) {
+							ChildData childData = userService.getChildDetails(user, child);
+							listChildData.add(childData);
+						}
+						userData.setChildData(listChildData);
+						responseObj.put("object", userData);
+						userService.updateLastActivity(user);
+					}				
 				}
+				break;
+				case Constant.INFO_ALL_USER:
+					if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
+						List < User > listUser = userService.getUser();
+						responseObj.put("object", listUser);
+					}
+				break;
+				case Constant.INFO_ID_USER:
+					if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
+						List < InfoUserID > listUser = userService.getListIDUser();
+						responseObj.put("object", listUser);
+					}
+				break;
+				default:
+				break;
 			}
 			response.setPayload(responseObj);
 		}catch (Exception e){

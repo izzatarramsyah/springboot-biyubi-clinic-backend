@@ -125,7 +125,7 @@ public class Constant {
 
 	public static final String INFO_ALL_USER = "info-all-user";
 
-	public static final String INFO_SIMPLE_USER = "info-all-simple-user";
+	public static final String INFO_ID_USER = "info-id-user";
 
 	public static final String USER_UPDATE = "user-update";
 

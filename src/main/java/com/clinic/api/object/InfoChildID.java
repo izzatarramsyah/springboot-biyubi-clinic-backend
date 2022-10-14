@@ -1,9 +1,16 @@
 package com.clinic.api.object;
 
-public class InfoChild {
+public class InfoChildID {
 
 	private int id;
 	private String fullname;
+
+	public InfoChildID(){}
+	
+	public InfoChildID (int id, String fullname){
+		this.id = id;
+		this.fullname = fullname;
+	}
 	
 	public int getId() {
 		return id;
