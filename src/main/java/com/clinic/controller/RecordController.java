@@ -28,13 +28,10 @@ import com.clinic.entity.AuditTrail;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
 import com.clinic.entity.Child;
-import com.clinic.entity.GrowthDtl;
 import com.clinic.entity.User;
 import com.clinic.entity.UserAdmin;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.entity.VaccineRecord;
-import com.clinic.report.ExportPDF;
-import com.clinic.service.AuditTrailService;
 import com.clinic.service.CheckUpService;
 import com.clinic.service.MailService;
 import com.clinic.service.MasterService;
@@ -168,11 +165,10 @@ public class RecordController extends BaseController {
 							switch ( req.getHeader().getCommand() ) {
 							case Constant.SAVE_CHECKUP_RECORD:
 								if ( check == null ) {
-									if (checkUpService.addCheckUpRecord( req.getPayload() )) {
+									if (checkUpService.addCheckUpRecord( userAdmin, req.getPayload() )) {
 										CheckUpRecord record = checkUpService.getCheckUpRecord(user.getId(), child.getId(), mstCode);
-										GrowthDtl growth = checkUpService.getGrowthDtl( mstCode, record.getId());
-										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
-									    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));
+										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(record.getWeight()))
+									    		  .replaceAll("<length>", String.valueOf(record.getLength())).replaceAll("<headDiameter>", String.valueOf(record.getHeadDiameter()));
 										//auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_ADD_CHECK_UP_RECORD, req.getHeader().getuName(), value2 ) );
 									}
 								} else {
@@ -181,11 +177,10 @@ public class RecordController extends BaseController {
 								break;
 							case Constant.UPDATE_CHECKUP_RECORD:
 								if ( check != null ) {
-									if (checkUpService.updateGrowthDtl( req.getPayload() )) {
+									if (checkUpService.updateCheckUpRecord( userAdmin, req.getPayload() )) {
 										CheckUpRecord record = checkUpService.getCheckUpRecord(user.getId(), child.getId(), mstCode);
-										GrowthDtl growth = checkUpService.getGrowthDtl( mstCode, record.getId());
-										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(growth.getWeight()))
-									    		  .replaceAll("<length>", String.valueOf(growth.getLength())).replaceAll("<headDiameter>", String.valueOf(growth.getHeadDiameter()));
+										String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(record.getWeight()))
+									    		  .replaceAll("<length>", String.valueOf(record.getLength())).replaceAll("<headDiameter>", String.valueOf(record.getHeadDiameter()));
 										//auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_UPDATE_CHECK_UP_RECORD, req.getHeader().getuName(), value2 ) );
 									}
 								} else { 

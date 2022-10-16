@@ -6,6 +6,7 @@ import com.clinic.api.object.ChildData;
 import com.clinic.api.object.InfoUserID;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
+import com.clinic.entity.UserAdmin;
 
 public interface UserService {
 
@@ -39,8 +40,6 @@ public interface UserService {
 
 	boolean updateLastActivity(User user) throws Exception;
 	
-	List < User > getUser() throws Exception;
-
 	ChildData getChildDetails(User user, Child child) throws Exception;
 	
 	boolean changePassword (User user, String newPassword) throws Exception;

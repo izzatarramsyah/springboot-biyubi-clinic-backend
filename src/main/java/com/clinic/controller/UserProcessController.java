@@ -119,14 +119,14 @@ public class UserProcessController extends BaseController {
 				break;
 				case Constant.INFO_ALL_USER:
 					if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
-						List < User > listUser = userService.getUser();
+						List < User > listUser = userService.getListUser();
 						responseObj.put("object", listUser);
 					}
 				break;
 				case Constant.INFO_ID_USER:
 					if (req.getHeader().getChannel().equals( Constant.CHANNEL_WEB )) {
 						List < InfoUserID > listUser = userService.getListIDUser();
-						responseObj.put("object", listUser);
+						responseObj.put("object", listUser); 
 					}
 				break;
 				default:
@@ -164,8 +164,7 @@ public class UserProcessController extends BaseController {
 						  if ( user != null ) {
 							  statusTrx = StatusCode.ALREDY_REGISTERD;
 						  } else {
-							  boolean isUserSaved = userService.insertUser( req.getPayload() );
-							  if ( isUserSaved == false ) {
+							  if ( !userService.insertUser( req.getPayload() ) ) {
 								  statusTrx = StatusCode.FAILED_PROCESS;
 							  }  else {
 								  user = userService.getUserByFullname( req.getPayload().getFullname() );
@@ -178,8 +177,7 @@ public class UserProcessController extends BaseController {
 					  case Constant.USER_UPDATE:
 						  user = userService.getUserByID( req.getPayload().getId() );
 						  if (user != null) {
-							  boolean isUpdateUser = userService.updateUser( req.getPayload() );
-							  if (isUpdateUser) {
+							  if ( userService.updateUser( req.getPayload() ) ) {
 								  String value2 = Constant.VALUE_UPDATE_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<email>", req.getPayload().getEmail())
 										  .replaceAll("<phone_no>", req.getPayload().getPhone_no()).replaceAll("<address>", req.getPayload().getAddress());
 								  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_UPDATE, req.getHeader().getuName(), value2 ) );
@@ -194,8 +192,7 @@ public class UserProcessController extends BaseController {
 					  case Constant.USER_CHANGE_STATUS:
 						  user = userService.getUserByID( req.getPayload().getId() );
 						  if (user != null) {
-							  boolean isChanged = userService.changeStatusUser( req.getPayload() );
-							  if (isChanged) {
+							  if ( userService.changeStatusUser( req.getPayload() ) ) {
 								  String value2 = Constant.VALUE_CHANGE_STATUS_USER.replaceAll("<fullname>", user.getFullname()).replaceAll("<status>", req.getPayload().getStatus());
 								  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_USER_STATUS_UPDATE, req.getHeader().getuName(), value2 ) );
 								  userAdminService.updateLastActivity(userAdminService.getAdminByUsername( req.getHeader().getuName() ));
@@ -257,8 +254,7 @@ public class UserProcessController extends BaseController {
 						  checkHealth.setBatch(0);
 						  checkHealth.setNotes(req.getPayload().getNotes());
 						  checkHealth.setCheckUpDate(new Date());
-						  boolean isSaved = checkUpService.addCheckUpRecord(checkHealth);
-						  if (isSaved) {
+						  if ( checkUpService.addCheckUpRecord( userAdmin, checkHealth ) ) {
 							  String value2 = Constant.VALUE_RECORD_CHECK_UP.replaceAll("<childName>", child.getFullname()).replaceAll("<weight>", String.valueOf(req.getPayload().getWeight()))
 						    		  .replaceAll("<length>", String.valueOf(req.getPayload().getLength())).replaceAll("<headDiameter>", String.valueOf(req.getPayload().getHeadDiameter()));
 							  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHILD_REGISTRATION, req.getHeader().getuName(), value2 ) );
@@ -277,8 +273,7 @@ public class UserProcessController extends BaseController {
 						  child.setFullname( req.getPayload().getFullname() );
 						  child.setBirthDate( req.getPayload().getBirthDate() );
 						  child.setGender( req.getPayload().getGender() );
-						  boolean isUpdated = userService.updateChild( child );
-						  if (isUpdated) {
+						  if ( userService.updateChild( child ) ) {
 							  String value2 = Constant.VALUE_UPDATE_CHILD.replaceAll("<childName>", req.getPayload().getFullname()).
 									  replaceAll("<gender>", req.getPayload().getGender()).replaceAll("<birthDate>", Util.formatDate(req.getPayload().getBirthDate()));
 							  //auditTrailService.saveAuditTrail(new AuditTrail( Constant.ACTIVITY_CHILD_UPDATE, req.getHeader().getuName(), value2 ) );

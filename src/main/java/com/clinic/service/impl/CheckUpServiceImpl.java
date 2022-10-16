@@ -18,7 +18,7 @@ import com.clinic.dao.UserDao;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
 import com.clinic.entity.Child;
-import com.clinic.entity.GrowthDtl;
+import com.clinic.entity.UserAdmin;
 import com.clinic.service.CheckUpService;
 import com.clinic.util.Util;
 
@@ -35,32 +35,19 @@ public class CheckUpServiceImpl implements CheckUpService{
 	UserDao userDao;
 	
 	@Override
-	public boolean addCheckUpRecord(CheckUpRequest param) throws Exception {
-		boolean result = false;
-		CheckUpMaster checkUpMaster = masterDao.getMstCheckUpByCode(param.getMstCode());
+	public boolean addCheckUpRecord(UserAdmin user, CheckUpRequest param) throws Exception {
 		CheckUpRecord record = new CheckUpRecord();
 		record.setUserId( param.getUserId() );
 		record.setChildId( param.getChildId() );
-		record.setMstCode( checkUpMaster.getCode() );
+		record.setMstCode( param.getMstCode() );
 		record.setCheckUpDate( param.getCheckUpDate() );
+		record.setWeight( param.getWeight() );
+		record.setLength( param.getLength() );
+		record.setHeadDiameter( param.getHeadDiameter() );
+		record.setNotes( param.getNotes() );
 		record.setCreatedDtm( new Date() );
-		record.setCreatedBy( "SYSTEM" );
-		int id = checkUpDao.addCheckUpRecord( record );
-		if ( id > 0 ) {
-			GrowthDtl growthDtl = new GrowthDtl();
-			growthDtl.setMstCode( checkUpMaster.getCode() );
-			growthDtl.setRecId( id );
-			growthDtl.setWeight( param.getWeight() );
-			growthDtl.setLength( param.getLength() );
-			growthDtl.setHeadDiameter( param.getHeadDiameter() );
-			growthDtl.setNotes( param.getNotes() );
-			growthDtl.setCreatedDtm( new Date() );
-			growthDtl.setCreatedBy( "SYSTEM" );
-			boolean growthSaved = checkUpDao.addGrowthDtl( growthDtl );
-			if ( growthSaved ) result = true;
-			
-		}
-		return result;
+		record.setCreatedBy( user.getUsername() );
+		return checkUpDao.addCheckUpRecord( record );
 	}
 	
 	@Override
@@ -83,20 +70,16 @@ public class CheckUpServiceImpl implements CheckUpService{
 			schedule.setNextCheckUpDays(cm.getNextCheckUpDays());
 
 			CheckUpRecord rec = checkUpDao.getCheckUpRecord ( userId, childId, cm.getCode());
-			GrowthDtl growthDtl = new GrowthDtl();
 
 			if (rec != null ) {
-				growthDtl = checkUpDao.getGrowthDtl(cm.getCode(), rec.getId());
-				if (growthDtl != null) {
-					schedule.setWeight(growthDtl.getWeight());
-					schedule.setLength(growthDtl.getLength());
-					schedule.setHeadDiameter(growthDtl.getHeadDiameter());
-					schedule.setNotes(growthDtl.getNotes());
-					schedule.setCheckUpDate( Util.formatDate( rec.getCheckUpDate()) );
-					if (growthDtl.getMstCode().equals("ACT_000")) {
-						schedule.setScheduleDate( Util.formatDate( child.getBirthDate() ) );
-						date = child.getBirthDate();
-					}
+				schedule.setWeight(rec.getWeight());
+				schedule.setLength(rec.getLength());
+				schedule.setHeadDiameter(rec.getHeadDiameter());
+				schedule.setNotes(rec.getNotes());
+				schedule.setCheckUpDate( Util.formatDate( rec.getCheckUpDate()) );
+				if (rec.getMstCode().equals("ACT_000")) {
+					schedule.setScheduleDate( Util.formatDate( child.getBirthDate() ) );
+					date = child.getBirthDate();
 				}
 			}
 			
@@ -118,27 +101,24 @@ public class CheckUpServiceImpl implements CheckUpService{
 	}
 
 	@Override
-	public GrowthDtl getGrowthDtl(String mstCode, int recId) throws ParseException {
-		return checkUpDao.getGrowthDtl(mstCode, recId);
-	}
-
-	@Override
 	public CheckUpRecord getCheckUpRecord(int userId, int childId, String mstCode) throws Exception {
 		return checkUpDao.getCheckUpRecord(userId, childId, mstCode);
 	}
 
 	@Override
-	public boolean updateGrowthDtl(CheckUpRequest checkUpRequest) throws Exception {
-		CheckUpRecord rec = checkUpDao.getCheckUpRecord ( checkUpRequest.getUserId(), checkUpRequest.getChildId(), checkUpRequest.getMstCode());
-		GrowthDtl dtl = new GrowthDtl();
-		dtl.setWeight( checkUpRequest.getWeight() );
-		dtl.setLength( checkUpRequest.getLength() );
-		dtl.setHeadDiameter( checkUpRequest.getHeadDiameter() );
-		dtl.setNotes( checkUpRequest.getNotes() );
-		dtl.setRecId( rec.getId() );
-		dtl.setLastUpdDtm( new Date() );
-		dtl.setLastUpdBy( "SYSTEM" );
-		return checkUpDao.updateGrowthDtl( dtl );
+	public boolean updateCheckUpRecord(UserAdmin user, CheckUpRequest checkHealth) throws Exception {
+		CheckUpRecord record = new CheckUpRecord();
+		record.setUserId( checkHealth.getUserId() );
+		record.setChildId( checkHealth.getChildId() );
+		record.setMstCode( checkHealth.getMstCode() );
+		record.setCheckUpDate( checkHealth.getCheckUpDate() );
+		record.setWeight( checkHealth.getWeight() );
+		record.setLength( checkHealth.getLength() );
+		record.setHeadDiameter( checkHealth.getHeadDiameter() );
+		record.setNotes( checkHealth.getNotes() );
+		record.setUpdatedBy(user.getUsername());
+		record.setUpdatedDtm( new Date() );
+		return false;
 	}
-	
+
 }

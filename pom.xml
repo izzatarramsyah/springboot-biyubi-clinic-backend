@@ -23,7 +23,7 @@
 		<spring-cloud-config.version>2.2.0.RELEASE</spring-cloud-config.version>
 		<json.version>20190722</json.version>
 		<ojdbc-version>11.2.0.3</ojdbc-version>
-		<projectlombok-version>1.18.10</projectlombok-version>
+		<projectlombok-version>1.18.20</projectlombok-version>
 		<springfox-swagger-version>2.9.2</springfox-swagger-version>
 	</properties>
 	

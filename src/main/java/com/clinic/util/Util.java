@@ -9,8 +9,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import com.clinic.constant.Constant;
+import java.util.regex.Pattern;
 
 public class Util {
+
+	private static final Pattern PATTERN_NUM_ONLY = Pattern.compile(".*[^0-9].*");
+
+	private static final String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+												"[a-zA-Z0-9_+&*-]+)*@" + 
+												"(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
+												"A-Z]{2,7}$"; 
+												
+	public static final String REGEX_FORMAT_STRING_DD_MM_YYYY = "([0-2][0-9]|(3)[0-1])(-)(((0)[0-9])|((1)[0-2]))(-)\\d{4}$";
 
 	public static String formatDateWithTime(Date date){
 		SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -119,5 +129,29 @@ public class Util {
 			return "Lingkar kepala anak tergolong besar (Makrosefali). Periksa segera ke dokter spesialis anak atau puskesmas terdekat untuk pemeriksaan dan penanganan lebih lanjut";
 		}
 		return null;
+	}
+
+	public static boolean isValidNumber(String msisdn){
+		Boolean result = PATTERN_NUM_ONLY.matcher(msisdn).matches();
+		return result;
+	}
+
+	public static boolean isValidPrefixNum(String msisdn){
+		if( !msisdn.startsWith("08") && ! msisdn.startsWith("62")){ 
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isValidEmail(String email){
+        Pattern pat = Pattern.compile(emailRegex); 		 
+        return pat.matcher(email).matches();
+	}
+
+	public static boolean isValidFormatDate(String date){
+		if (!date.matches( REGEX_FORMAT_STRING_DD_MM_YYYY )) {
+			return false;
+		}
+		return true;
 	}
 }

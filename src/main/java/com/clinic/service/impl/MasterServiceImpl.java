@@ -15,6 +15,7 @@ import com.clinic.dao.ApplicationConfigDao;
 import com.clinic.dao.MasterDao;
 import com.clinic.entity.ApplicationConfig;
 import com.clinic.entity.CheckUpMaster;
+import com.clinic.entity.UserAdmin;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.entity.VaccineMstDtl;
 import com.clinic.service.MasterService;
@@ -48,7 +49,7 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	@Override
-	public boolean addVaccineMaster(VaccineRequest vaccineRq) throws Exception {
+	public boolean addVaccineMaster(UserAdmin user, VaccineRequest vaccineRq) throws Exception {
 		VaccineMaster vm = mstDao.getMstVaccineByName(vaccineRq.getVaccineName());
 		if (vm == null) {
 			int count = mstDao.countVaccineMaster();
@@ -61,14 +62,14 @@ public class MasterServiceImpl implements MasterService{
 			mst.setStatus( "ACTIVE" );
 			mst.setNotes( vaccineRq.getNotes() );
 			mst.setCreatedDtm( new Date() );
-			mst.setCreatedBy( "SYSTEM");
+			mst.setCreatedBy( user.getUsername() );
 			boolean isSaved = mstDao.addVaccineMaster( mst );
 			if ( isSaved ) {
 				VaccineMstDtl dtl = new VaccineMstDtl();
 				dtl.setVaccineCode( code );
 				dtl.setBatch( vaccineRq.getBatch() );
 				dtl.setCreatedDtm( new Date() );
-				dtl.setCreatedBy( "SYSTEM");
+				dtl.setCreatedBy( user.getUsername() );
 				boolean isSavedDtl = mstDao.addVaccineMstDtl( dtl );
 				if ( isSavedDtl ) return true;
 			} 
@@ -77,7 +78,7 @@ public class MasterServiceImpl implements MasterService{
 			dtl.setVaccineCode( vm.getVaccineCode() );
 			dtl.setBatch( vaccineRq.getBatch() );
 			dtl.setCreatedDtm( new Date() );
-			dtl.setCreatedBy( "SYSTEM");
+			dtl.setCreatedBy( user.getUsername() );
 			boolean isSavedDtl = mstDao.addVaccineMstDtl( dtl );
 			if ( isSavedDtl ) return true;
 		}
@@ -85,7 +86,7 @@ public class MasterServiceImpl implements MasterService{
 	}
 
 	@Override
-	public boolean updateVaccineMaster(VaccineRequest rq) throws Exception {
+	public boolean updateVaccineMaster(UserAdmin user, VaccineRequest rq) throws Exception {
 		VaccineMaster mst = new VaccineMaster();
 		mst.setVaccineCode( rq.getVaccineCode() );
 		mst.setVaccineName( rq.getVaccineName() );
@@ -94,17 +95,17 @@ public class MasterServiceImpl implements MasterService{
 		mst.setStatus( "ACTIVE" );
 		mst.setNotes( rq.getNotes() );
 		mst.setCreatedDtm( new Date() );
-		mst.setCreatedBy( "SYSTEM" );
+		mst.setCreatedBy( user.getUsername() );
 		return mstDao.updateVaccineMaster( mst );
 	}
 	
 	@Override
-	public boolean changeStatusVaccineMaster(VaccineRequest rq) throws Exception {
+	public boolean changeStatusVaccineMaster(UserAdmin user, VaccineRequest rq) throws Exception {
 		VaccineMaster mst = new VaccineMaster();
 		mst.setVaccineCode( rq.getVaccineCode() );
 		mst.setStatus( rq.getStatus() );
 		mst.setLastUpdDtm( new Date() );
-		mst.setLastUpdBy( "SYSTEM" );
+		mst.setLastUpdBy( user.getUsername() );
 		return mstDao.changeStatusVaccineMaster( mst );
 	}
 	
@@ -119,27 +120,27 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	@Override
-	public boolean addCheckUpMaster(CheckUpMaster checkUpMaster) throws Exception {
+	public boolean addCheckUpMaster(UserAdmin user, CheckUpMaster checkUpMaster) throws Exception {
 		int count = mstDao.countVaccineCheckUp();
 		String code = "ACT_" + String.format("%03d", ++count);
 		checkUpMaster.setCode(code);
 		checkUpMaster.setStatus("ACTIVE");
 		checkUpMaster.setCreatedDtm(new Date());
-		checkUpMaster.setCreatedBy("SYSTEM");
+		checkUpMaster.setCreatedBy( user.getUsername() );
 		return mstDao.addCheckUpMaster(checkUpMaster);
 	}
 
 	@Override
-	public boolean updateCheckUpMaster(CheckUpMaster checkUpMaster) throws Exception {
+	public boolean updateCheckUpMaster(UserAdmin user, CheckUpMaster checkUpMaster) throws Exception {
 		checkUpMaster.setLastUpdDtm(new Date());
-		checkUpMaster.setLastUpdBy("SYSTEM");
+		checkUpMaster.setLastUpdBy( user.getUsername() );
 		return mstDao.updateCheckUpMaster(checkUpMaster);
 	}
 
 	@Override
-	public boolean changeStatusCheckUpMaster(CheckUpMaster checkUpMaster) throws Exception {
+	public boolean changeStatusCheckUpMaster(UserAdmin user, CheckUpMaster checkUpMaster) throws Exception {
 		checkUpMaster.setLastUpdDtm(new Date());
-		checkUpMaster.setLastUpdBy("SYSTEM");
+		checkUpMaster.setLastUpdBy( user.getUsername() );
 		return mstDao.changeStatusCheckUpMaster(checkUpMaster);
 	}
 	

@@ -241,7 +241,7 @@ public class UserDaoImpl implements UserDao {
 						PreparedStatement pst = connection.prepareStatement(INSERT_CHILD, Statement.RETURN_GENERATED_KEYS);
 						pst.setInt(1, child.getUserId());
 						pst.setString(2, child.getFullname());
-						pst.setDate(3,  new java.sql.Date(child.getBirthDate().getTime()));
+						pst.setDate(3, new java.sql.Date(child.getBirthDate().getTime()));
 						pst.setString(4, child.getGender());
 						pst.setString(5, child.getNotes());
 						pst.setDate(6, new java.sql.Date(child.getCreatedDtm().getTime()));
@@ -252,7 +252,6 @@ public class UserDaoImpl implements UserDao {
 				id = (int)keyHolder.getKeys().get("ID");
 			} 
 		}catch (Exception e){
-			id = 0;
 			LOG.error("ERR :: {}", e.getMessage());
 		}
 		LOG.debug("RESULT::{}", id);

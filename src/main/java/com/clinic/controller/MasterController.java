@@ -123,7 +123,7 @@ public class MasterController extends BaseController {
 					switch ( req.getHeader().getCommand() ) {
 					case Constant.SAVE_VACCINE:
 						LOG.info("COMMAND : SAVE");
-						result = masterService.addVaccineMaster( req.getPayload() );
+						result = masterService.addVaccineMaster( userAdmin, req.getPayload() );
 						if (result) {
 							value2 = Constant.VALUE_INSERT_MST_VACCINE.replaceAll("<vaccineName>", req.getPayload().getVaccineName()).
 									replaceAll("<vaccineType>", req.getPayload().getVaccineType()).
@@ -133,7 +133,7 @@ public class MasterController extends BaseController {
 						} 
 						break;
 					case Constant.UPDATE_VACCINE:
-						result = masterService.updateVaccineMaster( req.getPayload() );
+						result = masterService.updateVaccineMaster( userAdmin, req.getPayload() );
 						if (result) {
 							value2 = Constant.VALUE_UPDATE_MST_VACCINE.replaceAll("<vaccineName>", req.getPayload().getVaccineName()).
 									replaceAll("<vaccineType>", req.getPayload().getVaccineType()).
@@ -143,7 +143,7 @@ public class MasterController extends BaseController {
 						} 
 						break;
 					case Constant.CHANGE_STATUS_VACCINE:
-						result = masterService.changeStatusVaccineMaster(req.getPayload());
+						result = masterService.changeStatusVaccineMaster( userAdmin, req.getPayload());
 						if (result) {
 							value2 = Constant.VALUE_CHANGE_STATUS_MST_VACCINE.replaceAll("<vaccineName>", req.getPayload().getVaccineName()).
 									replaceAll("<status>", req.getPayload().getStatus());
@@ -187,7 +187,7 @@ public class MasterController extends BaseController {
 				} else {
 					switch ( req.getHeader().getCommand() ) {
 					case Constant.SAVE_CHECKUP:
-						result = masterService.addCheckUpMaster(req.getPayload());
+						result = masterService.addCheckUpMaster( user, req.getPayload() );
 						if (result) {
 							value2 = Constant.VALUE_INSERT_CHECKUP.replaceAll("<actName>", req.getPayload().getActName()).
 									replaceAll("<batch>", String.valueOf(req.getPayload().getBatch())).
@@ -196,7 +196,7 @@ public class MasterController extends BaseController {
 						} 
 						break;
 					case Constant.UPDATE_CHECKUP:
-						result = masterService.updateCheckUpMaster(req.getPayload());
+						result = masterService.updateCheckUpMaster( user, req.getPayload() );
 						if (result) {
 							value2 = Constant.VALUE_UPDATE_CHECKUP.replaceAll("<actName>", req.getPayload().getActName()).
 									replaceAll("<batch>", String.valueOf(req.getPayload().getBatch())).
@@ -205,7 +205,7 @@ public class MasterController extends BaseController {
 						} 
 						break;
 					case Constant.CHANGE_STATUS_CHECKUP:
-						result = masterService.changeStatusCheckUpMaster(req.getPayload());
+						result = masterService.changeStatusCheckUpMaster( user, req.getPayload() );
 						if (result) {
 							value2 = Constant.VALUE_CHANGE_STATUS_CHECKUP.replaceAll("<actName>", req.getPayload().getActName()).
 									replaceAll("<status>", req.getPayload().getStatus());

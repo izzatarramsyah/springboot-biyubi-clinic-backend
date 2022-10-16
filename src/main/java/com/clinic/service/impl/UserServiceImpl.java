@@ -15,7 +15,6 @@ import com.clinic.dao.UserDao;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
 import com.clinic.entity.Child;
-import com.clinic.entity.GrowthDtl;
 import com.clinic.entity.User;
 import com.clinic.service.CheckUpService;
 import com.clinic.service.MasterService;
@@ -104,11 +103,6 @@ public class UserServiceImpl implements UserService{
 	public Child getChildByFullname(String fullname) throws Exception {
 		return userDao.getChildByFullname(fullname);
 	}
-	
-	@Override
-	public List < User > getUser() throws Exception {
-		return userDao.getUser();
-	}
 
 	@Override
 	public User getUserByFullname(String fullname) throws Exception {
@@ -169,11 +163,10 @@ public class UserServiceImpl implements UserService{
 		for (CheckUpMaster lst : masterService.getListMstCheckUp()) {
 			CheckUpRecord checkUp = checkUpService.getCheckUpRecord(child.getUserId(), child.getId(), lst.getCode());
 			if (checkUp != null) {
-				GrowthDtl growthDtl = checkUpService.getGrowthDtl(checkUp.getMstCode(), checkUp.getId());
 				batch = lst.getBatch();
-				seriesWeight.add((double) growthDtl.getWeight());
-				seriesLength.add((double) growthDtl.getLength());
-				seriesHeadDiameter.add((double) growthDtl.getHeadDiameter());
+				seriesWeight.add((double) checkUp.getWeight());
+				seriesLength.add((double) checkUp.getLength());
+				seriesHeadDiameter.add((double) checkUp.getHeadDiameter());
 			}
 		}	
 		

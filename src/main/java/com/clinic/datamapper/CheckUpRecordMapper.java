@@ -20,6 +20,10 @@ public class CheckUpRecordMapper implements RowMapper<CheckUpRecord> {
 		result.setCreatedBy( rs.getString("CREATED_BY") );
 		result.setUpdatedDtm(rs.getTimestamp("LASTUPD_DTM"));
 		result.setUpdatedBy(rs.getString("LASTUPD_BY"));
+		result.setWeight( rs.getInt("WEIGHT") );
+		result.setLength( rs.getInt("LENGTH") );
+		result.setHeadDiameter( rs.getInt("HEAD_DIAMETER") );
+		result.setNotes(rs.getString("NOTES"));
 		return result;
 	}
 }

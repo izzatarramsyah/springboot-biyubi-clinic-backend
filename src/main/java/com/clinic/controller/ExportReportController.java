@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +20,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.api.object.CheckUpSchedule;
-import com.clinic.api.object.HeaderResponse;
 import com.clinic.api.object.InfoRq;
 import com.clinic.api.object.VaccineSchedule;
 import com.clinic.api.request.APIRequest;
-import com.clinic.api.response.APIResponse;
 import com.clinic.constant.Constant;
-import com.clinic.constant.StatusCode;
 import com.clinic.entity.AuditTrail;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.CheckUpRecord;
 import com.clinic.entity.Child;
-import com.clinic.entity.GrowthDtl;
 import com.clinic.entity.User;
 import com.clinic.entity.UserAdmin;
 import com.clinic.entity.VaccineMaster;
@@ -101,11 +95,7 @@ public class ExportReportController extends BaseController {
 					excelAsByte = ExportExcel.checkUpMst(listCheckUpMst);
 					break;
 				case Constant.INFO_LIST_USER:
-					List < User > listUser = userService.getUser();
-					for (User usr : listUser) {
-						List < Child > child = userService.getChildByUserID(usr.getId());
-						usr.setChild(child);
-					}
+					List < User > listUser = userService.getListUser();
 					excelAsByte = ExportExcel.listUser(listUser);
 					break;
 				case Constant.INFO_LOGS:
@@ -156,20 +146,19 @@ public class ExportReportController extends BaseController {
 						switch ( req.getHeader().getCommand() ) { 
 						case Constant.SCHEDULE_CHECKUP:
 							CheckUpRecord record = checkUpService.getCheckUpRecord( user.getId(), child.getId(), req.getPayload().getMstCode() );
-							GrowthDtl growth = checkUpService.getGrowthDtl( req.getPayload().getMstCode(), record.getId());
 							CheckUpMaster cm = masterService.getMstCheckUpByCode( req.getPayload().getMstCode() );
-							String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), growth.getWeight());
-							String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), growth.getLength());
-							String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), growth.getHeadDiameter());					
+							String weightCategory = masterService.category(Constant.WEIGHT, cm.getBatch(), record.getWeight());
+							String lengthCategory = masterService.category(Constant.LENGTH, cm.getBatch(), record.getLength());
+							String headDiameterCategory = masterService.category(Constant.HEAD_CIRCUMFERENCE, cm.getBatch(), record.getHeadDiameter());					
 							object.put("parentName", user.getFullname());
 							object.put("address", user.getAddress());
 							object.put("childName", child.getFullname());
 							object.put("age",  String.valueOf(Util.calculateMonth(formatDate.format(child.getBirthDate()), formatDate.format(new Date()))) + " Bulan") ;
 							object.put("birthDate", formatDate.format(child.getBirthDate()));
 							object.put("checkUpDate", Util.formatDate(record.getCheckUpDate()));
-							object.put("weight", String.valueOf(growth.getWeight()) + " KG");
-							object.put("length", String.valueOf(growth.getLength()) + " CM");
-							object.put("headDiameter", String.valueOf(growth.getHeadDiameter()) + " CM");
+							object.put("weight", String.valueOf(record.getWeight()) + " KG");
+							object.put("length", String.valueOf(record.getLength()) + " CM");
+							object.put("headDiameter", String.valueOf(record.getHeadDiameter()) + " CM");
 							object.put("weightNotes", Util.getWeightNotes (weightCategory) );
 							object.put("lengthNotes", Util.getLengthNotes (lengthCategory));
 							object.put("headDiameterNotes", Util.getHeadDiameterNotes (headDiameterCategory));

@@ -10,14 +10,10 @@ public interface CheckUpDao {
 			
 	CheckUpRecord getCheckUpRecord ( int userId, int childId, String mstCode) throws Exception;
 	
-	GrowthDtl getGrowthDtl (String mstCode, int recId);
-
 	List < CheckUpRecord > getListCheckUpRecord ( int userId, int childId ) throws Exception;
 	
-	int addCheckUpRecord ( CheckUpRecord checkHealth ) throws Exception;
+	boolean addCheckUpRecord ( CheckUpRecord checkHealth ) throws Exception;
 
-	boolean addGrowthDtl (GrowthDtl growthDtl);
-
-	boolean updateGrowthDtl (GrowthDtl growthDtl);
+	boolean updateCheckUpRecord (CheckUpRecord checkHealth) throws Exception;
 
 }

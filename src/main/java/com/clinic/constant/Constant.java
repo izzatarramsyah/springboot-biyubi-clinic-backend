@@ -165,8 +165,4 @@ public class Constant {
 
 	public static final String CHANGE_STATUS_CHECKUP = "change-status-checkup";
 
-	/*REGEX*/
-    public static final String REGEX_FORMAT_STRING_DD_MM_YYYY = "([0-2][0-9]|(3)[0-1])(-)(((0)[0-9])|((1)[0-2]))(-)\\d{4}$";
-
-    
 }
