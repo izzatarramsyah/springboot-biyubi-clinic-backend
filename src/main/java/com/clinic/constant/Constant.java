@@ -48,6 +48,14 @@ public class Constant {
 	
 	public static final String ACTIVITY_UPDATE_CHECK_UP_RECORD = "UPDATE DATA JEJAK MEDIS";
 
+	public static final String ACTIVITY_UPLOAD_FILE_USER = "UPLOAD FILE REGISTRASI PENGGUNA";
+
+	public static final String ACTIVITY_UPLOAD_FILE_CHILD = "UPLOAD FILE DATA ANAK";
+
+	public static final String ACTIVITY_UPLOAD_VACCINE = "UPLOAD FILE DATA IMUNISASI";
+
+	public static final String ACTIVITY_UPLOAD_CHECK_UP = "UPLOAD FILE DATA JEJAK MEDIS";
+
 	/* TYPE */
 	
 	public static final String WEIGHT = "WEIGHT";
@@ -87,7 +95,7 @@ public class Constant {
 	/* VALUE LOGS */
 	
 	public static final String VALUE_INSERT_USER = "Nama : <fullname> | Tanggal Bergabung : <joinDate> ";
-	
+
 	public static final String VALUE_UPDATE_USER = "Nama : <fullname> | Email : <email> | No Telepon : <phone_no> | Alamat : <address>";
 
 	public static final String VALUE_CHANGE_STATUS_USER = "Nama : <fullname> | Status : <status> ";
@@ -111,6 +119,8 @@ public class Constant {
 	public static final String VALUE_UPDATE_CHECKUP = "Nama Kegiatan : <actName> | Bulan Ke : <batch> | Hari Selanjutnya : <nextDays> ";
 
 	public static final String VALUE_CHANGE_STATUS_CHECKUP = "Nama Kegiatan : <actName> | Status : <status> ";
+
+	public static final String VALUE_UPLOAD_FILE = "Nama File : <fileName> | Berhasil : <successCount> | Gagal : : <failedCount> ";
 
 	/*MENU TYPE*/
 	public static final String USER_REGISTARTION = "user-registration";

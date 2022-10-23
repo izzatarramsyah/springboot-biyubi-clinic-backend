@@ -2,7 +2,7 @@ package com.clinic.entity;
 
 import java.util.Date;
 
-public class AuditTrail {
+public class Log {
 	
 	private final String ACTIVITY_KEY = "USERNAME";
 	
@@ -19,11 +19,11 @@ public class AuditTrail {
 	Date createdDtm;
 	String createdBy;
 	
-	public AuditTrail(){
+	public Log(){
 		
 	}
 	
-	public AuditTrail(String activity, String value1, String value2){
+	public Log(String activity, String value1, String value2){
 		this.activity = activity;
 		this.key = ACTIVITY_KEY;
 		this.value1 = value1;

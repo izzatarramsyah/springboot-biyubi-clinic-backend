@@ -5,12 +5,12 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.clinic.entity.AuditTrail;
+import com.clinic.entity.Log;
 
-public class AuditTrailMapper implements RowMapper<AuditTrail> {
+public class LogMapper implements RowMapper<Log> {
 	@Override
-	public AuditTrail mapRow(ResultSet rs, int row) throws SQLException {
-		AuditTrail result = new AuditTrail();
+	public Log mapRow(ResultSet rs, int row) throws SQLException {
+		Log result = new Log();
 		result.setId(rs.getLong("ID"));
 		result.setActivity(rs.getString("ACTIVITY"));
 		result.setKey(rs.getString("KEY"));

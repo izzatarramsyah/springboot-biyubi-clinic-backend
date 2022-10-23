@@ -18,13 +18,16 @@ import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 
 import com.clinic.api.object.CheckUpSchedule;
 import com.clinic.api.object.VaccineSchedule;
-import com.clinic.entity.AuditTrail;
+import com.clinic.entity.Log;
 import com.clinic.entity.CheckUpMaster;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
 import com.clinic.entity.VaccineMaster;
 import com.clinic.util.Util;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class ExportExcel {
 	
@@ -656,7 +659,7 @@ public class ExportExcel {
 	    return baos.toByteArray();
 	}
 	
-	public static byte [] auditTrail(List < AuditTrail > auditTrail, String startDate, String endDate) throws IOException{
+	public static byte [] log(List < Log > log) throws IOException{
 		Workbook workbook = new HSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("Daftar Aktivitas Admin");
 	    sheet.setPrintGridlines(false);
@@ -680,7 +683,12 @@ public class ExportExcel {
         font1.setFontHeightInPoints((short)12);
         font1.setBold(true);
         style1.setFont(font1);
-        header1.createCell(0).setCellValue("Periode : " + startDate + " - " + endDate);
+		LocalDate today = LocalDate.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern( "dd-MM-yyyy" );
+        String endDate = today.format( format );
+        LocalDate lastweek = today.minus( 1, ChronoUnit.WEEKS );
+        String beginDate = lastweek.format( format );
+        header1.createCell(0).setCellValue("Periode : " + beginDate + " - " + endDate);
         header1.getCell(0).setCellStyle(style1);
         
         //create header row
@@ -721,7 +729,7 @@ public class ExportExcel {
 	    int rowCount = 5;
 	    int no = 0;
 	    
-	    for ( AuditTrail m : auditTrail ) {
+	    for ( Log m : log ) {
 	    	Row userRow =  sheet.createRow(rowCount++);
 	    	userRow.createCell(0).setCellValue(no++);
 	    	userRow.getCell(0).setCellStyle(styleData);
