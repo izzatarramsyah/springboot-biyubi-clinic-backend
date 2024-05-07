@@ -1,10 +1,14 @@
-# Description
-Springboot Backend for Biyubi Clinic App
+# Java Simple Project
 
-# Project 
-Biyubi Clinic Growth Monitoring for 0-2 years child accroding Z Score WHO
+## Project Name
+Biyubi Clinic Growth Monitoring App 
 
-# Stack
-Java Spring Boot Cloud, Postgre SQL
+## Project Description
+Simple Backend Web Application with Growth Monitoring for 0-2 Years Child Accroding Z Score WHO Case Study
 
-
+## Project Stack
+- Java Spring Boot Version 8
+- mvn
+- PostgreSQL
+- Apahce POI
+- Jasper report
