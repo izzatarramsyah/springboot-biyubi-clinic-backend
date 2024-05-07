@@ -27,8 +27,8 @@ public class UserDaoImpl implements UserDao {
 	private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
 	
 	public static final String INSERT_USER = "INSERT INTO TBL_USER "
-			+ " ( USERNAME, PASSWORD, FULLNAME, ADDRESS, EMAIL, PHONE_NO, STATUS, CREATED_DTM, CREATED_BY, JOIN_DATE ) "
-			+ " VALUES (?,?,?,?,?,?,?,?,?,?) ";
+			+ " ( USERNAME, PASSWORD, FULLNAME, ADDRESS, EMAIL, PHONE_NO, STATUS, CREATED_DTM, CREATED_BY ) "
+			+ " VALUES (?,?,?,?,?,?,?,?,?) ";
 	 
 	public static final String INSERT_CHILD = "INSERT INTO TBL_CHILD "
 			+ " ( USER_ID, FULLNAME, BIRTH_DATE, GENDER, NOTES, CREATED_DTM, CREATED_BY )"
@@ -221,7 +221,7 @@ public class UserDaoImpl implements UserDao {
 			result = jdbcTemplate.update(INSERT_USER,
 					new Object[] {user.getUsername(), user.getPassword(), user.getFullname(), 
 							user.getAddress(), user.getEmail(), user.getPhone_no(), user.getStatus(), 
-							user.getCreatedDtm(), user.getCreatedBy(), user.getJoinDate()});
+							user.getCreatedDtm(), user.getCreatedBy()});
 		}catch (Exception e){
 			LOG.error("ERR :: {}", e.getMessage());
 		}

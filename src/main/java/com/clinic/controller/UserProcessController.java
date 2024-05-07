@@ -27,8 +27,6 @@ import com.clinic.api.response.APIResponse;
 import com.clinic.constant.Constant;
 import com.clinic.constant.StatusCode;
 import com.clinic.entity.Log;
-import com.clinic.entity.CheckUpMaster;
-import com.clinic.entity.CheckUpRecord;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
 import com.clinic.entity.UserAdmin;
@@ -39,7 +37,6 @@ import com.clinic.service.MasterService;
 import com.clinic.service.UserAdminService;
 import com.clinic.service.UserService;
 import com.clinic.util.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin
 @RestController

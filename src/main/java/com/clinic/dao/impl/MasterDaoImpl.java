@@ -32,8 +32,7 @@ public class MasterDaoImpl implements MasterDao{
 	public static final String GET_LIST_MST_CHECK_UP = "SELECT A.* FROM TBL_CHECK_UP_MASTER A ORDER BY A.BATCH ASC ";
 
 	public static final String GET_LIST_MST_DTL_VACCINE = "SELECT A.* FROM TBL_VACCINE_MASTER_DTL A "
-			+ "WHERE A.VACCINE_CODE = ?"
-			+ "ORDER BY A.BATCH ASC ";
+			+ "WHERE A.VACCINE_CODE = ? ORDER BY A.BATCH ASC ";
 	
 	public static final String GET_MST_CHECK_UP_BY_CODE = "SELECT A.* FROM TBL_CHECK_UP_MASTER A WHERE A.CODE = ?";
 

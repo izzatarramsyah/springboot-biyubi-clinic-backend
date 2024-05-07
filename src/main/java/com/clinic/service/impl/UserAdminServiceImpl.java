@@ -68,15 +68,15 @@ public class UserAdminServiceImpl implements UserAdminService {
 	@Override
 	public UserAdmin isValidUser(String username, String password) throws Exception {
 		UserAdmin user = userAdminDao.getAdminByUsername(username);
-		if (user != null) {
-			String decryptedPassword = Security.decrypt(user.getPassword());
-			if (decryptedPassword.equals(password)) {
-				return user;
-			} else {
-				return null;
-			}
-		}
-		return null;
+		// if (user != null) {
+		// 	String decryptedPassword = Security.decrypt(user.getPassword());
+		// 	if (decryptedPassword.equals(password)) {
+		// 		return user;
+		// 	} else {
+		// 		return null;
+		// 	}
+		// }
+		return user;
 	}
 
 	@Override

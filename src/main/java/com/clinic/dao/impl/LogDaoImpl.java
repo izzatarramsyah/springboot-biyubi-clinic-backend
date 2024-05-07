@@ -16,11 +16,6 @@ import com.clinic.config.variable.ApplicationConstant;
 import com.clinic.dao.LogDao;
 import com.clinic.datamapper.LogMapper;
 import com.clinic.entity.Log;
-import com.clinic.util.Util;
-
-	import java.time.LocalDate;
-	import java.time.format.DateTimeFormatter;
-	import java.time.temporal.ChronoUnit;
 
 @Repository
 public class LogDaoImpl implements LogDao{

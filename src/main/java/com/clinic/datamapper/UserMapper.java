@@ -24,7 +24,6 @@ public class UserMapper implements RowMapper<User> {
 		result.setCreatedBy(rs.getString("CREATED_BY"));
 		result.setUpdatedDtm(rs.getTimestamp("LASTUPD_DTM"));
 		result.setUpdatedBy(rs.getString("LASTUPD_BY"));
-		result.setJoinDate(rs.getDate("JOIN_DATE"));
 		return result;
 	}
 }

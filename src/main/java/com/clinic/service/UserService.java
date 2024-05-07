@@ -6,7 +6,6 @@ import com.clinic.api.object.ChildData;
 import com.clinic.api.object.InfoUserID;
 import com.clinic.entity.Child;
 import com.clinic.entity.User;
-import com.clinic.entity.UserAdmin;
 
 public interface UserService {
 

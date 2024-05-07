@@ -28,7 +28,6 @@ public class VaccineMasterMapper implements RowMapper<VaccineMaster> {
 		result.setCreatedBy(rs.getString("CREATED_BY"));
 		result.setLastUpdDtm(rs.getTimestamp("LASTUPD_DTM"));
 		result.setLastUpdBy(rs.getString("LASTUPD_BY"));
-		result.setStatus(rs.getString("STATUS"));
 		return result;
 	}
 }

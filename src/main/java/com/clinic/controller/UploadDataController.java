@@ -1,7 +1,6 @@
 package com.clinic.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -198,14 +197,6 @@ public class UploadDataController extends BaseController {
 												countSuccess++;
 												String param = "Baris Ke - " + row++;
 												uploadResponse.add(new UploadResponse(param, "Berhasil"));
-												String value2 = Constant.VALUE_RECORD_VACCINE
-														.replaceAll("<childName>", child.getFullname())
-														.replaceAll("<vaccineName>", vm.getVaccineName())
-														.replaceAll("<batch>", String.valueOf(data.getBulan()))
-														.replaceAll("<notes>", data.getCatatan());
-												// auditTrailService.saveAuditTrail(new AuditTrail(
-												// Constant.ACTIVITY_ADD_VACCINE_RECORD, req.getHeader().getuName(),
-												// value2) );
 											} else {
 												countFailed++;
 												String param = "Baris Ke - " + row++;
@@ -250,15 +241,6 @@ public class UploadDataController extends BaseController {
 												countSuccess++;
 												String param = "Baris Ke - " + row++;
 												uploadResponse.add(new UploadResponse(param, "Berhasil"));
-												String value2 = Constant.VALUE_RECORD_CHECK_UP
-														.replaceAll("<childName>", child.getFullname())
-														.replaceAll("<weight>", String.valueOf(data.getBerat_Badan()))
-														.replaceAll("<length>", String.valueOf(data.getPanjang_Badan()))
-														.replaceAll("<headDiameter>",
-																String.valueOf(data.getLingkar_Kepala()));
-												// auditTrailService.saveAuditTrail(new AuditTrail(
-												// Constant.ACTIVITY_ADD_CHECK_UP_RECORD, req.getHeader().getuName(),
-												// value2 ) );
 											} else {
 												countFailed++;
 												String param = "Baris Ke - " + row++;
@@ -281,7 +263,6 @@ public class UploadDataController extends BaseController {
 						responseObject.put("countFailed", countFailed);
 						responseObject.put("object", uploadResponse);
 					}
-
 					if (activity != null) {
 						String value2 = activity
 								.replaceAll("<fileName>", req.getPayload().getFilename())
@@ -291,7 +272,6 @@ public class UploadDataController extends BaseController {
 								Constant.ACTIVITY_UPLOAD_FILE_USER, req.getHeader().getuName(),
 								value2));
 					}
-
 					userAdminService
 							.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
 				}

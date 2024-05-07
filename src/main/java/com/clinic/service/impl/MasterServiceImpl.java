@@ -34,10 +34,7 @@ public class MasterServiceImpl implements MasterService{
 	public List < VaccineMaster > getListMstVaccine() throws Exception {
 		List < VaccineMaster > result = mstDao.getListMstVaccine();
 		for (VaccineMaster vm : result) {
-			List < VaccineMstDtl > detail = new ArrayList < VaccineMstDtl >();
-			for (VaccineMstDtl dtl : mstDao.getListVaccineMstDtl(vm.getVaccineCode())) {
-				detail.add(dtl);
-			}
+			List < VaccineMstDtl > detail = mstDao.getListVaccineMstDtl(vm.getVaccineCode());
 			vm.setDetail( detail );
 		}
 		return result;

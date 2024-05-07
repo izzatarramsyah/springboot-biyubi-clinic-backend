@@ -43,14 +43,10 @@ public class UserAdminController extends BaseController {
 		APIResponse<HashMap<String, Object>> response = new APIResponse<HashMap<String, Object>>();
 		HashMap<String, Object> responseObject = new HashMap<String, Object>();
 		StatusCode statusTrx = StatusCode.SUCCESS_PROCESS;
-
 		try {
-
 			LOG.info("LOGIN");
 			APIRequest<UserAdmin> req = getRequestUserAdmin(input);
-
 			if (req.getHeader().getChannel().equals(Constant.CHANNEL_WEB)) {
-
 				UserAdmin userAdmin = userAdminService.isValidUser(req.getPayload().getUsername(),
 						req.getPayload().getPassword());
 				if (userAdmin == null) {
@@ -73,15 +69,12 @@ public class UserAdminController extends BaseController {
 				}
 
 			}
-
 			response.setPayload(responseObject);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
 		}
-
 		response.setHeader(new HeaderResponse(statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
@@ -95,14 +88,10 @@ public class UserAdminController extends BaseController {
 		APIResponse<HashMap<String, Object>> response = new APIResponse<HashMap<String, Object>>();
 		StatusCode statusTrx = StatusCode.SUCCESS;
 		HashMap<String, Object> responseObject = new HashMap<String, Object>();
-
 		try {
-
 			LOG.info("CHECKSESSION");
 			APIRequest<UserAdmin> req = getRequestUserAdmin(input);
-
 			if (req.getHeader().getChannel().equals(Constant.CHANNEL_WEB)) {
-
 				UserAdmin user = userAdminService.getAdminByUsername(req.getHeader().getuName());
 				if (user == null) {
 					statusTrx = StatusCode.USER_NOT_FOUND;
@@ -118,15 +107,12 @@ public class UserAdminController extends BaseController {
 				}
 
 			}
-
 			response.setPayload(responseObject);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
 		}
-
 		response.setHeader(new HeaderResponse(statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
@@ -135,35 +121,26 @@ public class UserAdminController extends BaseController {
 
 	@RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public APIResponse<?> logout(@RequestBody String input) {
-
 		LOG.traceEntry();
 		APIResponse<HashMap<String, Object>> response = new APIResponse<HashMap<String, Object>>();
 		HashMap<String, Object> responseObject = new HashMap<String, Object>();
 		StatusCode statusTrx = StatusCode.SUCCESS;
 		String username = null;
-
 		try {
-
 			LOG.info("LOGOUT");
 			APIRequest<UserAdmin> req = getRequestUserAdmin(input);
-
 			if (req.getHeader().getChannel().equals(Constant.CHANNEL_WEB)) {
-
 				username = req.getPayload().getUsername();
 				UserAdmin user = userAdminService.getAdminByUsername(username);
 				user.setSessionId(null);
 				userAdminService.updateSessionId(user);
-
 			}
-
 			response.setPayload(responseObject);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
 		}
-
 		response.setHeader(new HeaderResponse(statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
@@ -172,36 +149,26 @@ public class UserAdminController extends BaseController {
 
 	@RequestMapping(value = "/getLogs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public APIResponse<?> getLogs(@RequestBody String input) {
-
 		LOG.traceEntry();
 		APIResponse<HashMap<String, Object>> response = new APIResponse<HashMap<String, Object>>();
 		HashMap<String, Object> responseObj = new HashMap<String, Object>();
 		StatusCode statusTrx = StatusCode.SUCCESS_PROCESS;
-
 		try {
-
 			LOG.info("GET LIST LOGS");
 			APIRequest<UserAdmin> req = getRequestUserAdmin(input);
-
 			if (req.getHeader().getChannel().equals(Constant.CHANNEL_WEB)) {
-
 				responseObj.put("object", logService.getLogs(req.getPayload().getUsername()));
 				response.setPayload(responseObj);
-
 				userAdminService.updateLastActivity(userAdminService.getAdminByUsername(req.getHeader().getuName()));
-
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("ERR::[{}]:{}", e.getMessage());
 			statusTrx = StatusCode.GENERIC_ERROR;
 		}
-
 		response.setHeader(new HeaderResponse(statusTrx.getCode(), statusTrx.getStatusDesc()));
 		LOG.traceExit();
 		return response;
-
 	}
 
 }

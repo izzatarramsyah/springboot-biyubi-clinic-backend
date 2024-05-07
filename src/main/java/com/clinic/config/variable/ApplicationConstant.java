@@ -1,7 +1,7 @@
 package com.clinic.config.variable;
 
 public class ApplicationConstant {
-	public static final String APP_NAME = "/clinic";
+	public static final String APP_NAME = "/biyubi-clinic-backend";
     public static final int HTTP_CLIENT_CONNECTION_TIMEOUT = 20000;
     public static final int HTTP_CLIENT_READ_TIMEOUT = 20000;
     public static final int SOA_TIMEOUT = 5000;

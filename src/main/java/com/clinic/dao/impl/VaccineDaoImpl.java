@@ -14,7 +14,6 @@ import com.clinic.config.variable.ApplicationConstant;
 import com.clinic.dao.VaccineDao;
 import com.clinic.datamapper.VaccineRecordMapper;
 import com.clinic.entity.VaccineRecord;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class VaccineDaoImpl implements VaccineDao{ 
